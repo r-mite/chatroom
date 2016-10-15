@@ -400,7 +400,9 @@ function pickRanking(num){
 		for(key in dealList){
 			dealAry.push({key:key, deal:dealList[key]});
 		}
-		_.sortBy(dealAry, elem => elem.deal*-1);
+		_.sortBy(dealAry, function(elem){
+			return -Number(elem.deal);
+		});
 		/*
 		dealAry.sort(function(a,b){
 			return Number(a.deal) < Number(b.deal);
