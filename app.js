@@ -9,6 +9,8 @@ var io = require("socket.io").listen(server);
 
 var Promise = require('es6-promise').Promise;
 
+var _ = require('lodash');
+
 // ユーザ管理
 var userHash = {};
 var userCount = 0;
@@ -398,9 +400,11 @@ function pickRanking(num){
 		for(key in dealList){
 			dealAry.push({key:key, deal:dealList[key]});
 		}
+		_.sortBy(dealAry, elem => elem.deal*-1);
+		/*
 		dealAry.sort(function(a,b){
 			return Number(a.deal) < Number(b.deal);
-		});
+		});*/
 		console.log(dealAry);
 		resolve(dealAry[num-1].key);
 	});
