@@ -402,7 +402,7 @@ function pickRanking(num){
 			return Number(a.deal) < Number(b.deal);
 		});
 		resolve(dealAry[num-1].key);
-	}
+	});
 }
 
 //setエミット用jsonリスト
