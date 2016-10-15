@@ -401,7 +401,6 @@ function pickRanking(num){
 			dealAry.push({"key":key, "deal":dealList[key]});
 		}
 		var sorted = _.sortBy(dealAry, elem => elem.deal*-1);
-		console.log(sorted);
 		resolve(sorted[num-1].key);
 	});
 }
