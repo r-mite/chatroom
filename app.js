@@ -393,7 +393,7 @@ function escape_html(string){
 
 //任意ランキング取り出し
 function pickRanking(num){
-	return new Promise(resolve){
+	return new Promise(function(resolve){
 		var dealAry = [];
 		for(key in dealList){
 			dealAry.push({key:key, deal:dealList[key]});
