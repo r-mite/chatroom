@@ -398,7 +398,7 @@ function pickRanking(num){
 	return new Promise(function(resolve){
 		var dealAry = [];
 		for(key in dealList){
-			dealAry.push({key:key, deal:dealList[key]});
+			dealAry.push({"key":key, "deal":dealList[key]});
 		}
 		_.sortBy(dealAry, "deal");
 		/*
