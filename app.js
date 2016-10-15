@@ -401,6 +401,7 @@ function pickRanking(num){
 		dealAry.sort(function(a,b){
 			return Number(a.deal) < Number(b.deal);
 		});
+		console.log(dealAry);
 		resolve(dealAry[num-1].key);
 	});
 }
