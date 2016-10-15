@@ -400,13 +400,9 @@ function pickRanking(num){
 		for(key in dealList){
 			dealAry.push({"key":key, "deal":dealList[key]});
 		}
-		_.sortBy(dealAry, "deal");
-		/*
-		dealAry.sort(function(a,b){
-			return Number(a.deal) < Number(b.deal);
-		});*/
-		console.log(dealAry);
-		resolve(dealAry[num-1].key);
+		var sorted = _.sortBy(dealAry, elem => elem.deal*-1);
+		console.log(sorted);
+		resolve(sorted[num-1].key);
 	});
 }
 
