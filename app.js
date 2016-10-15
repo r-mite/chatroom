@@ -139,8 +139,9 @@ io.sockets.on("connection", function (socket) {
 					break;
 				case 7:
 					if(cmd.val !== void 0){
-						var pick = pickRanking(cmd.val);
-						io.to(roomid).emit("push", {val:6, mes:"DEAL:現在のランキング" + cmd.val + "位は" + userHash[pick] + "!後に続け!(" + (dealList[pick] < 0 ? "パス" : dealList[pick]) + ")"});
+						pickRanking(cmd.val).then(function(pick){
+							io.to(roomid).emit("push", {val:6, mes:"DEAL:現在のランキング" + cmd.val + "位は" + userHash[pick] + "!後に続け!(" + (dealList[pick] < 0 ? "パス" : dealList[pick]) + ")"});
+						});
 					}
 					break;
 				case 8:
@@ -190,13 +191,14 @@ io.sockets.on("connection", function (socket) {
 				end = true;
 			}
 			if(dealing == 0){
-				var key = pickRanking(1);
-				if(dealList[key] < 0){
-					io.to(roomid).emit("push", {val:6, mes:"DEAL:防衛失敗"});
-				}else{
-					io.to(roomid).emit("push", {val:6, mes:"DEAL:現在のランキング1位は" + userHash[key] + "!後に続け!(" + (dealList[key] < 0 ? "パス" : dealList[key]) + ")"});
-				}
-				io.sockets.emit("deal", {val:false});
+				pickRanking(1).then(function(key){
+					if(dealList[key] < 0){
+						io.to(roomid).emit("push", {val:6, mes:"DEAL:防衛失敗"});
+					}else{
+						io.to(roomid).emit("push", {val:6, mes:"DEAL:現在のランキング1位は" + userHash[key] + "!後に続け!(" + (dealList[key] < 0 ? "パス" : dealList[key]) + ")"});
+					}
+					io.sockets.emit("deal", {val:false});
+				});
 			}
 			if(end){
 				io.sockets.emit("set", mergeSetList());
@@ -391,14 +393,16 @@ function escape_html(string){
 
 //任意ランキング取り出し
 function pickRanking(num){
-	var dealAry = [];
-	for(key in dealList){
-		dealAry.push({key:key, deal:dealList[key]});
+	return new Promise(resolve){
+		var dealAry = [];
+		for(key in dealList){
+			dealAry.push({key:key, deal:dealList[key]});
+		}
+		dealAry.sort(function(a,b){
+			return Number(a.deal) < Number(b.deal);
+		});
+		resolve(dealAry[num-1].key);
 	}
-	dealAry.sort(function(a,b){
-		return Number(a.deal) < Number(b.deal);
-	});
-	return dealAry[num-1].key;
 }
 
 //setエミット用jsonリスト
