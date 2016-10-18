@@ -118,6 +118,7 @@ io.sockets.on("connection", function (socket) {
 		var handshake = JSON.parse(JSON.stringify(socket.handshake));
 		var remoteAddress = handshake["address"].substr(-11,9);
 		var exp = new RegExp("cmd ");
+		console.log(userHash[socket.id] + "かえで");
 		if((remoteAddress == "192.168.3" || userHash[socket.id] == "かえで") && message.search(exp) == 0){
 			var cmd = checkCommand(message.substr(4));
 			switch(cmd.num){
