@@ -45,7 +45,7 @@ io.sockets.on("connection", function (socket) {
 			switch(cmd.num){
 				case 1:
 					for(key in userHash){
-						io.to(key).emit("return", {value:4});
+						io.to(key).emit("return", {value:1});
 					}
 					break;
 				case 2:
@@ -128,7 +128,7 @@ io.sockets.on("connection", function (socket) {
 			switch(cmd.num){
 				case 1:
 					for(key in userHash){
-						io.to(key).emit("return", {value:4});
+						io.to(key).emit("return", {value:1});
 					}
 					break;
 				case 2:
@@ -354,7 +354,6 @@ function checkCommand(cmd){
 
 //変数初期化
 function init(){
-	userHash = {};
 	userCount = 0;
 	userMax = 9999;
 	dealing = -1;
