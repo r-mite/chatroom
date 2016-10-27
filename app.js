@@ -43,6 +43,11 @@ io.sockets.on("connection", function (socket) {
 		if(remoteAddress == "192.168.3" && name.search(exp) == 0){
 			var cmd = checkCommand(name.substr(4));
 			switch(cmd.num){
+				case 1:
+					for(key in userHash){
+						io.to(key).emit("return", {value:4});
+					}
+					break;
 				case 2:
 					io.sockets.emit("set", mergeSetList());
 					break;
@@ -121,6 +126,11 @@ io.sockets.on("connection", function (socket) {
 		if((remoteAddress == "192.168.3" || userHash[socket.id] == "かえで") && message.search(exp) == 0){
 			var cmd = checkCommand(message.substr(4));
 			switch(cmd.num){
+				case 1:
+					for(key in userHash){
+						io.to(key).emit("return", {value:4});
+					}
+					break;
 				case 2:
 					io.sockets.emit("set", mergeSetList());
 					break;
@@ -218,6 +228,11 @@ io.sockets.on("connection", function (socket) {
 
 //自動返信イベント
 	socket.on("auto", function(data){
+		if(data.value == 1){
+			socket.emit("push", {val:1, mes:"ルームが変更されました"});
+			socket.leave(roomid);
+			delete userHash[socket.id];
+		}
 		if(data.value == 4){
 			socket.leave(roomid);
 			var message = "\"" + userHash[socket.id] + "\"きくうしさまが退室させられました。";
