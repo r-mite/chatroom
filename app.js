@@ -38,8 +38,6 @@ io.sockets.on("connection", function (socket) {
 //接続開始イベント
 	socket.on("connected", function(name){
 		//コマンドはルームに入る前から使える
-//		var handshake = JSON.parse(JSON.stringify(socket.handshake));
-//		var remoteAddress = handshake["headers"].substr(-11,9);
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
 		if(remoteAddress == "192.168.3" && name.search(exp) == 0){
@@ -106,7 +104,7 @@ io.sockets.on("connection", function (socket) {
 		//あるマイトは一人
 		if(remoteAddress != "192.168.3"){
 			if(name == "あるマイト"){
-				socket.emit("push", {val:0, mes:'その子は忌み子、忌み子じゃよ！！'+remoteAddress+'///'+JSON.stringify(socket.handshake)});
+				socket.emit("push", {val:0, mes:'その子は忌み子、忌み子じゃよ！！'+remoteAddress});
 				return;
 			}
 		}
@@ -122,8 +120,7 @@ io.sockets.on("connection", function (socket) {
 //メッセージ送信イベント
 	socket.on("push", function(message){
 		//コマンド
-		var handshake = JSON.parse(JSON.stringify(socket.handshake));
-		var remoteAddress = handshake["address"].substr(-11,9);
+		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
 		if((remoteAddress == "192.168.3" || userHash[socket.id] == "かえで") && message.search(exp) == 0){
 			var cmd = checkCommand(message.substr(4));
