@@ -105,7 +105,7 @@ io.sockets.on("connection", function (socket) {
 		//あるマイトは一人
 		if(remoteAddress != "192.168.3"){
 			if(name == "あるマイト"){
-				socket.emit("push", {val:0, mes:'その子は忌み子、忌み子じゃよ！！'+remoteAddress+'///'+handshake});
+				socket.emit("push", {val:0, mes:'その子は忌み子、忌み子じゃよ！！'+remoteAddress+'///'+socket.handshake});
 				return;
 			}
 		}
