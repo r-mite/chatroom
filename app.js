@@ -38,8 +38,9 @@ io.sockets.on("connection", function (socket) {
 //接続開始イベント
 	socket.on("connected", function(name){
 		//コマンドはルームに入る前から使える
-		var handshake = JSON.parse(JSON.stringify(socket.handshake));
-		var remoteAddress = handshake["address"].substr(-11,9);
+//		var handshake = JSON.parse(JSON.stringify(socket.handshake));
+//		var remoteAddress = handshake["headers"].substr(-11,9);
+		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
 		if(remoteAddress == "192.168.3" && name.search(exp) == 0){
 			var cmd = checkCommand(name.substr(4));
