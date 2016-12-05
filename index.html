@@ -48,6 +48,9 @@
 		background:#000000;
 		color:#ffff00;
 	}
+	div#modal{
+		opacity:0;
+	}
 	textarea{
 		position:fixed;
 	}
@@ -195,9 +198,9 @@
 			document.execCommand('copy');
 			copyFrom.remove();
 			//アラート処理
-			var modal = $('<div class="bs-component modal"><div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div></div>');
+			var modal = $('<div class="alert alert-dismissible alert-success modal"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div>');
 			$('div#alert').append(modal);
-			slideIn().then(slideOut);
+			//slideIn().then(slideOut);
 		}
 		
 		//モーダルスライド
