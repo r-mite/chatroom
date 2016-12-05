@@ -11,63 +11,8 @@
 	body{
 		background:#add8e6;
 		line-height:1.5;
-	    padding:70px 10px;
+	    padding:120px 10px;
 	}
-	/*
-	input{
-		-webkit-border-radius:5px;
-		-moz-border-radius:5px;
-		border-radius:5px;
-		padding:10px;
-	}
-	input.text{
-		width:80%;
-	}
-	input.push{
-		width:15%;
-		font-weight:bold;
-		color:#ffffff;
-		border-style:none;
-		text-shadow: 1px 1px 2px #000;
-		background-color: #248;
-		box-shadow: 2px 2px 3px 1px #666;
-		-moz-box-shadow: 2px 2px 3px 1px #666;
-		-webkit-box-shadow: 2px 2px 3px 1px #666;
-	}
-	input.push:hover{
-		opacity:0.8;
-	}
-	input.deal{
-		margin:0px 10px;
-		padding:10px 30px;
-		font-weight:bold;
-		color:#ffffff;
-		border-style:none;
-		text-shadow: 1px 1px 2px #000;
-		background-color: #4169e1;
-		box-shadow: 2px 2px 3px 1px #191970;
-		-moz-box-shadow: 2px 2px 3px 1px #191970;
-		-webkit-box-shadow: 2px 2px 3px 1px #191970;
-	}
-	input.deal:hover{
-		opacity:0.8;
-	}
-	input.pass{
-		margin:0px 10px;
-		padding:10px 30px;
-		font-weight:bold;
-		color:#ffffff;
-		border-style:none;
-		text-shadow: 1px 1px 2px #000;
-		background-color: #fa8072;
-		box-shadow: 2px 2px 3px 1px #b22222;
-		-moz-box-shadow: 2px 2px 3px 1px #b22222;
-		-webkit-box-shadow: 2px 2px 3px 1px #b22222;
-	}
-	input.pass:hover{
-		opacity:0.8;
-	}
-	*/
 	li.chat{
 		background:#ffffff;
 		margin-bottom:5px;
@@ -169,7 +114,7 @@
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container-fluid">
-			<div class="navbar-header col-md-6">
+			<div class="navbar-header col-md-4">
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -186,7 +131,7 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li class="navbar-text" id="user"></li>
-					<li><a href="#">Link</a></li>
+					<li class="navbar-text" id="info"></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
@@ -260,11 +205,12 @@
 		
 		//受信部
 		function countFamily(num, max, mem, dnum, dmem){
-			var text = 'ルーム人数は' + num + '/' + max;
+			$('li#info').empty();
+			var text = '<span class="glyphicon glyphicon-home"></span>' + num + '/' + max;
 			if(dnum > 0){
-				text += ', ディール人数は' + Object.keys(dmem).length + '/' + dnum;
+				text += ' <span class="glyphicon glyphicon-ok-circle"></span>' + Object.keys(dmem).length + '/' + dnum;
 			}
-			$('div#info').html(text);
+			$('li#info').append(text);
 			$('div#member').empty();
 			for(key in mem){
 				if(dnum > 0){
