@@ -48,61 +48,6 @@
 		background:#000000;
 		color:#ffff00;
 	}
-	div#front{
-		position:fixed;
-		z-index:998;
-		background:#add8e6;
-		width:100%;
-		top:-10px;
-		padding:20px 0 10px 0;
-	}
-	div#member{
-		overflow: hidden;
-		margin-right: 10px;
-		zoom:1;
-	}
-	div#member:before,
-	div#member:after{
-		content:"";
-		display:table;
-	}
-	div#member:after{
-		clear:both;
-	}
-	div.mem{
-		float:left;
-		background:#e9967a;
-		margin:1px;
-		padding:5px 10px;
-		border-radius:10px;
-		-webkit-border-radius:10px;
-		-moz-border-radius:10px;
-	}
-	div.dmem{
-		float:left;
-		background:#808080;
-		margin:1px;
-		padding:5px 10px;
-		border-radius:10px;
-		-webkit-border-radius:10px;
-		-moz-border-radius:10px;
-	}
-	div#modal{
-		position:fixed;
-		z-index:999;
-		top:-50px;
-		left:50%;
-		margin-left:-100px;
-		opacity:0;
-		background:#ffdead;
-		padding:10px 30px;
-		border-radius:10px;
-		-webkit-border-radius:10px;
-		-moz-border-radius:10px;
-		box-shadow: 2px 2px 3px 1px #666;
-		-moz-box-shadow: 2px 2px 3px 1px #666;
-		-webkit-box-shadow: 2px 2px 3px 1px #666;
-	}
 	textarea{
 		position:fixed;
 	}
@@ -141,30 +86,15 @@
 						<ul class="dropdown-menu" id=member></ul>
 					</li>
 				</ul>
+				<!--
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="#">Link</a></li>
 				</ul>
+				-->
 			</div>
 		</div>
 	</nav>
-          <!--
-	<div id="front">
-		<div id="user"></div>
-		<div id="info"></div>
-		
-		<form name="push" action="" onsubmit="return false;">
-			<input type="text" class="text" id="msg_box" autocomplete="off" />
-			<input type="submit" class="push" id="msg_button" value="登録" onClick="pushMessage('');return false;" />
-		</form>
-		
-		<form name="deal" action="" onsubmit="return false;">
-			<input type="submit" class="deal" value="ディール" onClick="pushMessage('deal');return false;" />
-			<input type="submit" class="pass" value="パスする" onClick="pushMessage('pass');return false;" />
-		</form>
-		
-		<div id="member"></div>
-	</div>
-	-->
+	<div id="alert"></div>
 	<div id="log">
 		<ul class="chatlist">
 			<li class="chat">グラブル待機ルームへようこそ！</li>
@@ -264,10 +194,9 @@
 			copyFrom.select();
 			document.execCommand('copy');
 			copyFrom.remove();
-			//モーダル処理
-			var modal = $('<div id="modal">');
-			modal.html("ファクシミリしました。");
-			$('body').append(modal);
+			//アラート処理
+			var modal = $('<div class="bs-component modal"><div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div></div>');
+			$('div#alert').append(modal);
 			slideIn().then(slideOut);
 		}
 		
@@ -276,7 +205,6 @@
 			var d = new $.Deferred;
 			var modal = $('div#modal');
 			modal.animate({
-				top:'20px',
 				opacity:1
 			}, 700, function(){
 				d.resolve();
@@ -289,7 +217,6 @@
 			var modal = $('div#modal');
 			modal.delay(2000)
 				.animate({
-				top:'-70px',
 				opacity:0
 			}, 700, function(){
 				modal.remove();
