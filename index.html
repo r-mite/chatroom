@@ -13,6 +13,7 @@
 		line-height:1.5;
 	    padding:10px;
 	}
+	/*
 	input{
 		-webkit-border-radius:5px;
 		-moz-border-radius:5px;
@@ -66,6 +67,7 @@
 	input.pass:hover{
 		opacity:0.8;
 	}
+	*/
 	li.chat{
 		background:#ffffff;
 		margin-bottom:5px;
@@ -229,23 +231,6 @@
 	-->
 	<div id="log">
 		<ul>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
-		<li class="chat">グラブル待機ルームへようこそ！</li>
 			<li class="chat">グラブル待機ルームへようこそ！</li>
 			<li class="chat">まずはきくうしさまの名前を登録しよう</li>
 		</ul>
@@ -326,7 +311,7 @@
 		}
 		
 		function addMessage(num, name, mes){
-			var obj = $('<li class="' + 'pat' + num + '"/>')
+			var obj = $('<li class="' + 'chat pat' + num + '"/>')
 				.css({
 					right:'40px',
 					opacity:0
