@@ -48,7 +48,7 @@
 		background:#000000;
 		color:#ffff00;
 	}
-	div#alertbox{
+	div.alertbox{
 		opacity:0;
 	}
 	textarea{
@@ -206,7 +206,7 @@
 		//モーダルスライド
 		function slideIn(){
 			var d = new $.Deferred;
-			var modal = $('div#modalbox');
+			var modal = $('div.modalbox');
 			modal.animate({
 				opacity:1
 			}, 700, function(){
@@ -217,7 +217,7 @@
 		
 		function slideOut(){
 			var d = new $.Deferred;
-			var modal = $('div#modalbox');
+			var modal = $('div.modalbox');
 			modal.delay(2000)
 				.animate({
 				opacity:0
