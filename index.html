@@ -133,20 +133,8 @@
 					<li class="navbar-text" id="user"></li>
 					<li class="navbar-text" id="info"></li>
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">高坂 穂乃果</a></li>
-							<li><a href="#">南 ことり</a></li>
-							<li><a href="#">園田 海未</a></li>
-							<li class="divider"></li>
-							<li><a href="#">小泉 花陽</a></li>
-							<li><a href="#">星空 凛</a></li>
-							<li><a href="#">西木野 真姫</a></li>
-							<li class="divider"></li>
-							<li><a href="#">矢澤 にこ</a></li>
-							<li><a href="#">絢瀬 絵里</a></li>
-							<li><a href="#">東條 希</a></li>
-						</ul>
+						<a href="" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Member <span class="caret"></span></a>
+						<ul class="dropdown-menu" id=member></ul>
 					</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
@@ -211,19 +199,15 @@
 				text += ' <span class="glyphicon glyphicon-ok-circle"></span>' + Object.keys(dmem).length + '/' + dnum;
 			}
 			$('li#info').append(text);
-			$('div#member').empty();
+			$('ul#member').empty();
 			for(key in mem){
 				if(dnum > 0){
-					text = '<div class="' + (dmem[key] ? 'mem' : 'dmem') + '">' + mem[key] + '</div>';
+					text = '<li class="' + (dmem[key] ? 'mem' : 'dmem') + '">' + mem[key] + '</li>';
 				}else{
-					text = '<div class="mem">' + mem[key] + '</div>';
+					text = '<li>' + mem[key] + '</li>';
 				}
-				$('div#member').append(text);
+				$('ul#member').append(text);
 			}
-			var h = $('#front').height();
-			$('#log').css({
-				padding:h+"px 0 0 0"
-			});
 		}
 		
 		function setName(name){
