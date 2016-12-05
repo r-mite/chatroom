@@ -230,7 +230,7 @@
 	</div>
 	-->
 	<div id="log">
-		<ul>
+		<ul class="chatlist">
 			<li class="chat">グラブル待機ルームへようこそ！</li>
 			<li class="chat">まずはきくうしさまの名前を登録しよう</li>
 		</ul>
@@ -325,7 +325,7 @@
 				obj.attr('onClick', 'copyList(this);');
 			}
 			obj.html(text);
-			$('ul').prepend(obj);
+			$('ul.chatlist').prepend(obj);
 			obj.animate({
 				right:'0',
 				opacity:1
