@@ -48,7 +48,7 @@
 		background:#000000;
 		color:#ffff00;
 	}
-	div#modal{
+	div#alertbox{
 		opacity:0;
 	}
 	textarea{
@@ -198,15 +198,15 @@
 			document.execCommand('copy');
 			copyFrom.remove();
 			//アラート処理
-			var modal = $('<div class="alert alert-dismissible alert-success modal"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div>');
+			var modal = $('<div class="alert alert-dismissible alert-success modalbox"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div>');
 			$('div#alert').append(modal);
-			//slideIn().then(slideOut);
+			slideIn().then(slideOut);
 		}
 		
 		//モーダルスライド
 		function slideIn(){
 			var d = new $.Deferred;
-			var modal = $('div#modal');
+			var modal = $('div#modalbox');
 			modal.animate({
 				opacity:1
 			}, 700, function(){
@@ -217,7 +217,7 @@
 		
 		function slideOut(){
 			var d = new $.Deferred;
-			var modal = $('div#modal');
+			var modal = $('div#modalbox');
 			modal.delay(2000)
 				.animate({
 				opacity:0
