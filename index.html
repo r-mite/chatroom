@@ -202,9 +202,9 @@
 			$('ul#member').empty();
 			for(key in mem){
 				if(dnum > 0){
-					text = '<li class="' + (dmem[key] ? 'mem' : 'dmem') + '">' + mem[key] + '</li>';
+					text = '<li><a href="" onClick="return false;"><span class="label label-' + (dmem[key] ? 'success">deal</span>' : 'default">no deal</span>') + mem[key] + '</a></li>';
 				}else{
-					text = '<li><a href="">' + mem[key] + '</a></li>';
+					text = '<li><a href="" onClick="return false;">' + mem[key] + '</a></li>';
 				}
 				$('ul#member').append(text);
 			}
