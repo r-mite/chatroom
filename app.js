@@ -181,11 +181,11 @@ io.sockets.on("connection", function (socket) {
 						list[ankUser[key]]++;
 						max++;
 					}
-					var ans = "";
+					var ans = "結果は";
 					for(var i=0; i<ankMax; i++){
 						ans += i + ":" + ankList[i] + "=" + list[i] + "(" + (list[i] == 0 ? 0 : list[i] * 100 / max) + "%),";
 					}
-					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
+					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans + ":" + ankMax + ":" + max});
 					break;
 				case 12:
 					break;
