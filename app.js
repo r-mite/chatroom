@@ -174,7 +174,7 @@ io.sockets.on("connection", function (socket) {
 				case 11:
 					var list = [];
 					var max = 0;
-					for(var i=0; i<ankMax; i++){
+					for(var i=0; i<cmd.val; i++){
 						list.push(0);
 					}
 					for(var key in ankUser){
@@ -182,10 +182,10 @@ io.sockets.on("connection", function (socket) {
 						max++;
 					}
 					var ans = "結果は";
-					for(var i=0; i<ankMax; i++){
+					for(var i=0; i<cmd.val; i++){
 						ans += i + ":" + ankList[i] + "=" + list[i] + "(" + (list[i] == 0 ? 0 : list[i] * 100 / max) + "%),";
 					}
-					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans + ":" + ankMax + ":" + max});
+					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans + ":" + cmd.val + ":" + max});
 					break;
 				case 12:
 					break;
@@ -398,8 +398,9 @@ function checkCommand(cmd){
 				return {num:10, mes:"コマンド：アンケートを開始"};
 				break;
 			case "a":
+				var max = ankMax;
 				ankMax = 0;
-				return {num:11, mes:"コマンド：アンケートの結果"};
+				return {num:11, mes:"コマンド：アンケートの結果", val:max};
 				break;
 			case "r":
 				ankList = [];
