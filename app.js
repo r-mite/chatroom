@@ -183,7 +183,7 @@ io.sockets.on("connection", function (socket) {
 					}
 					var ans = "";
 					for(var i=0; i<ankMax; i++){
-						ans += i + ":" + list[i] + "(" + list[i] * 100 / max + "%),";
+						ans += i + ":" + ankList[i] + "=" + list[i] + "(" + (list[i] == 0 ? 0 : list[i] * 100 / max) + "%),";
 					}
 					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
 					break;
@@ -252,6 +252,7 @@ io.sockets.on("connection", function (socket) {
 			if(message.search(exp) == 0){
 				if(!ankUser[socket.id]){
 					ankUser[socket.id] = Number(message);
+					socket.emit("push", {val:0, mes:'投票しました。'});
 				}
 				return;
 			}
