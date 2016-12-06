@@ -167,7 +167,10 @@ io.sockets.on("connection", function (socket) {
 				case 10:
 					var list = "";
 					for(var i=0; i<ankMax; i++){
-						list += i + ":" + ankList[i] + ",";
+						list += i + ":" + ankList[i];
+						if(i != ankMax-1){
+							list += ",";
+						}
 					}
 					io.to(roomid).emit("push", {val:1, mes:"アンケート:開始しました。" + list});
 					break;
@@ -181,11 +184,14 @@ io.sockets.on("connection", function (socket) {
 						list[ankUser[key]]++;
 						max++;
 					}
-					var ans = "結果は";
+					var ans = "";
 					for(var i=0; i<cmd.val; i++){
-						ans += i + ":" + ankList[i] + "=" + list[i] + "(" + (list[i] == 0 ? 0 : list[i] * 100 / max) + "%),";
+						ans += i + ":" + ankList[i] + "=" + (list[i] == 0 ? 0 : floatFormat(list[i] * 100 / max, 2)) + "%";
+						if(i != cmd.val-1){
+							ans += ",";
+						}
 					}
-					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans + ":" + cmd.val + ":" + max});
+					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
 					break;
 				case 12:
 					break;
@@ -489,4 +495,10 @@ function pickRanking(num){
 //setエミット用jsonリスト
 function mergeSetList(){
 	return {num:userCount, max:userMax, mem:rebuildUser(), dnum:dealUserMax, dmem:rebuildDeal()};
+}
+
+//小数点以下n位までの四捨五入
+function floatFormat(number, n){
+	var _pow = Math.pow(10, n);
+	return Math.round(number * _pow) / _pow;
 }
