@@ -20,6 +20,9 @@ var roomid = 4545;
 var dealing = -1;
 var dealList = {};
 var dealUserMax = -1;
+var ankList = [];
+var ankUser = {};
+var ankMax = 0;
 
 //表示メッセージ種類
 /*
@@ -161,6 +164,33 @@ io.sockets.on("connection", function (socket) {
 				case 9:
 					io.sockets.emit("deal", {val:false});
 					break;
+				case 10:
+					var list = "";
+					for(var i=0; i<ankMax; i++){
+						list += i + ":" + ankList[i] + ",";
+					}
+					io.to(roomid).emit("push", {val:1, mes:"アンケート:開始しました。" + list});
+					break;
+				case 11:
+					var list = [];
+					var max = 0;
+					for(var i=0; i<ankMax; i++){
+						list.push(0);
+					}
+					for(var key in ankUser){
+						list[ankUser[key]]++;
+						max++;
+					}
+					var ans = "";
+					for(var i=0; i<ankMax; i++){
+						ans += i + ":" + list[i] + "(" + list[i] * 100 / max + "%),";
+					}
+					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
+					break;
+				case 12:
+					break;
+				case 13:
+					break;
 			}
 			
 			socket.emit("push", {val:4, mes:cmd.mes});
@@ -213,6 +243,16 @@ io.sockets.on("connection", function (socket) {
 			}
 			if(end){
 				io.sockets.emit("set", mergeSetList());
+				return;
+			}
+		}
+		//ankモード時
+		if(ankMax>0){
+			exp = new RegExp("^\\d+$");
+			if(message.search(exp) == 0){
+				if(!ankUser[socket.id]){
+					ankUser[socket.id] = Number(message);
+				}
 				return;
 			}
 		}
@@ -347,6 +387,29 @@ function checkCommand(cmd){
 	if(cmd.search(exp) == 0){
 		return {num:9, mes:"コマンド:OFFDEALを使用"};
 	}
+	//10,11,12,13:アンケート機能
+	var exp = new RegExp("ank ");
+	if(cmd.search(exp) == 0){
+		var name = cmd.substr(4, cmd.length-1);
+		switch(name){
+			case "q":
+				ankMax = ankList.length;
+				return {num:10, mes:"コマンド：アンケートを開始"};
+				break;
+			case "a":
+				ankMax = 0;
+				return {num:11, mes:"コマンド：アンケートの結果"};
+				break;
+			case "r":
+				ankList = [];
+				ankUser = {};
+				ankMax = 0;
+				return {num:12, mes:"コマンド：アンケートを終了"};
+				break;
+		}
+		ankList.push(name);
+		return {num:13, mes:"コマンド：アンケートセット -> " + name};
+	}
 	//-1:該当なし
 	return {num:-1, mes:"ニュージェネかな。"};
 }
@@ -358,6 +421,9 @@ function init(){
 	dealing = -1;
 	dealList = {};
 	dealUserMax = -1;
+	ankList = [];
+	ankUser = [];
+	ankMax = 0;
 }
 
 //ユーザー連想配列再編成
