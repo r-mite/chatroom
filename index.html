@@ -56,6 +56,9 @@
 	div.modalbox{
 		opacity:0;
 	}
+	div.ank{
+		padding-top:10%;
+	}
 	textarea{
 		position:fixed;
 	}
@@ -108,7 +111,7 @@
 		</ul>
 	</div>
 	<div class="modal fade" id="ankmodal" tabindex="-1">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg ank">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
@@ -189,7 +192,10 @@
 		
 		function appearModal(val){
 			if(val){
-				$('#ankmodal').modal('show');
+				$('#ankmodal').modal({
+					keyboard:false,
+					backdrop:"static"
+				});
 			}else{
 				$('#ankmodal').modal('hide');
 			}
