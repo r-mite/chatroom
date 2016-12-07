@@ -90,8 +90,8 @@ io.sockets.on("connection", function (socket) {
 		//ankモード時
 		if(ankMax>0){
 			exp = new RegExp("^\\d+$");
-			if(message.search(exp) == 0){
-				ankUser[socket.id] = Number(message);
+			if(name.search(exp) == 0){
+				ankUser[socket.id] = Number(name);
 				socket.emit("push", {val:0, mes:'投票しました。'});
 				return;
 			}
@@ -459,7 +459,7 @@ function checkCommand(cmd){
 				break;
 			case 3:
 				ankTitle = "今から行きたいHLは？";
-				list = ["ナタク", "フラム＝グラス", "マキュラ", "メドゥーサ", "アポロン", "オリヴィエ", "ローズクイーン", "プロトバハムート"];
+				list = ["ナタク", "フラム＝グラス", "マキュラ・マリウス", "メドゥーサ", "アポロン", "Dエンジェル・オリヴィエ", "ローズクイーン", "プロトバハムート"];
 				break;
 		}
 		for(var i=0; i<list.length; i++){
