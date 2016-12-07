@@ -23,6 +23,7 @@ var dealUserMax = -1;
 var ankList = [];
 var ankUser = {};
 var ankMax = 0;
+var ankTitle = "";
 
 //表示メッセージ種類
 /*
@@ -85,6 +86,15 @@ io.sockets.on("connection", function (socket) {
 			
 			socket.emit("push", {val:4, mes:cmd.mes});
 			return;
+		}
+		//ankモード時
+		if(ankMax>0){
+			exp = new RegExp("^\\d+$");
+			if(message.search(exp) == 0){
+				ankUser[socket.id] = Number(message);
+				socket.emit("push", {val:0, mes:'投票しました。'});
+				return;
+			}
 		}
 		//人数チェック
 		if(userCount >= userMax){
@@ -172,8 +182,8 @@ io.sockets.on("connection", function (socket) {
 							list += ",";
 						}
 					}
-					io.sockets.emit("push", {val:1, mes:"アンケート:開始しました。" + list});
-					io.sockets.emit("ank", {val:true, opt:ankList, push:true});
+					io.sockets.emit("push", {val:1, mes:"アンケート開始:" + ankTitle + "---" + list});
+					io.sockets.emit("ank", {val:true, title:ankTitle, opt:ankList, push:true});
 					break;
 				case 11:
 					var list = [];
@@ -195,13 +205,15 @@ io.sockets.on("connection", function (socket) {
 							ans += ",";
 						}
 					}
-					io.sockets.emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
-					io.sockets.emit("ank", {val:true, opt:ansList, push:false});
+					io.sockets.emit("push", {val:1, mes:"アンケート結果:" + ankTitle + "---" + ans});
+					io.sockets.emit("ank", {val:true, title:ankTitle, opt:ansList, push:false});
 					break;
 				case 12:
 					io.sockets.emit("ank", {val:false});
 					break;
 				case 13:
+					break;
+				case 14:
 					break;
 			}
 			
@@ -416,11 +428,44 @@ function checkCommand(cmd){
 				ankList = [];
 				ankUser = {};
 				ankMax = 0;
+				ankTitle = "";
 				return {num:12, mes:"コマンド：アンケートを終了"};
 				break;
 		}
+		if(ankTitle == ""){
+			ankTitle = name;
+			return {num:13, mes:"コマンド：アンケートタイトル -> " + name};
+		}
 		ankList.push(name);
 		return {num:13, mes:"コマンド：アンケートセット -> " + name};
+	}
+	//14:定型アンケートのセット
+	var exp = new RegExp("ankset ");
+	if(cmd.search(exp) == 0){
+		var num = cmd.substr(4, cmd.length-1);
+		var list = [];
+		switch(num){
+			case 0:
+				ankTitle = "好きな言葉は？";
+				list = ["ふたなり", "種付け"];
+				break;
+			case 1:
+				ankTitle = "好きな挨拶は？";
+				list = ["わこつ", "ｽﾞｺｰ", "イケドン", "おtんtん"];
+				break;
+			case 2:
+				ankTitle = "彼女にしたい星晶獣は？";
+				list = ["ティアマト", "コロッサス", "リヴァイアサン", "ユグドラシル", "シュバリエ", "セレスト"];
+				break;
+			case 3:
+				ankTitle = "今から行きたいHLは？";
+				list = ["ナタク", "フラム＝グラス", "マキュラ", "メドゥーサ", "アポロン", "オリヴィエ", "ローズクイーン", "プロトバハムート"];
+				break;
+		}
+		for(var i=0; i<list.length; i++){
+			ankList.push(list[i]);
+		}
+		return {num:14, mes:"コマンド：定型アンケートセット -> " + ankTitle};
 	}
 	//-1:該当なし
 	return {num:-1, mes:"ニュージェネかな。"};

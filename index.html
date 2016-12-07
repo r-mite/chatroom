@@ -120,7 +120,7 @@
 		<div class="modal-dialog modal-lg ank">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">アンケート</h4>
+					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
 					<div class="container-fluid">
@@ -141,7 +141,7 @@
 		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
 		socketio.on("name", function(data){setName(data.name)});
 		socketio.on("deal", function(data){appearButton(data.val)});
-		socketio.on("ank", function(data){appearModal(data.val, data.opt, data.push)});
+		socketio.on("ank", function(data){appearModal(data.val, data.title, data.opt, data.push)});
 		socketio.on("return", function(data){socketio.emit("auto", data);});
 		socketio.on("disconnect", function(){});
 		
@@ -194,8 +194,9 @@
 			}
 		}
 		
-		function appearModal(val, opt, push){
+		function appearModal(val, title, opt, push){
 			if(val){
+				$('.modal-title').html("アンケート:" + title);
 				$('#ankrow').empty();
 				var colmd = "col-md-" + (opt.length <= 4 ? 6 : 4);
 				var abutton = "ankbutton" + (opt.length <= 4 ? "l" : "s") + " ";
