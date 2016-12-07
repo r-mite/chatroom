@@ -138,7 +138,7 @@
 		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
 		socketio.on("name", function(data){setName(data.name)});
 		socketio.on("deal", function(data){appearButton(data.val)});
-		socketio.on("ank", function(data){appearModal(data.val)});
+		socketio.on("ank", function(data){appearModal(data.val, data.opt)});
 		socketio.on("return", function(data){socketio.emit("auto", data);});
 		socketio.on("disconnect", function(){});
 		
@@ -191,11 +191,12 @@
 			}
 		}
 		
-		function appearModal(val){
+		function appearModal(val, opt){
 			if(val){
 				$('#ankrow').empty();
-				for(var i=0; i<4; i++){
-					var obj = $('<button class="btn btn-default btn-lg ankbutton col-md-6">Block level button</button>');
+				var colmd = "col-md-" + (opt.length <= 4 ? 6 : 4);
+				for(var i=0; i<opt.length; i++){
+					var obj = $('<button class="btn btn-default btn-lg ankbutton ' + colmd + '">' + opt[i] + '</button>');
 					$('#ankrow').append(obj);
 				}
 				$('#ankmodal').modal({
