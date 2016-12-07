@@ -193,13 +193,11 @@
 		
 		function appearModal(val){
 			if(val){
-				$('#ankmodal').on('shown.bs.modal', function(event){
-					$('#ankrow').empty();
-					var obj = $('<button class="btn btn-default btn-lg btn-block ankbutton col-md-6">Block level button</button>');
-					for(var i=0; i<4; i++){
-						$('#ankrow').append(obj);
-					}
-				});
+				$('#ankrow').empty();
+				for(var i=0; i<4; i++){
+					var obj = $('<button class="btn btn-default btn-lg ankbutton col-md-6">Block level button</button>');
+					$('#ankrow').append(obj);
+				}
 				$('#ankmodal').modal({
 					keyboard:false,
 					backdrop:"static"
