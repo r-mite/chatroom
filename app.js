@@ -173,7 +173,7 @@ io.sockets.on("connection", function (socket) {
 						}
 					}
 					io.sockets.emit("push", {val:1, mes:"アンケート:開始しました。" + list});
-					io.sockets.emit("ank", {val:true, opt:ankList});
+					io.sockets.emit("ank", {val:true, opt:ankList, push:true});
 					break;
 				case 11:
 					var list = [];
@@ -190,13 +190,13 @@ io.sockets.on("connection", function (socket) {
 					for(var i=0; i<cmd.val; i++){
 						var per = (list[i] == 0 ? 0 : floatFormat(list[i] * 100 / max, 2)) + "%";
 						ans += i + ":" + ankList[i] + "=" + per;
-						ansList.push(ankList[i] + "\n" + per)
+						ansList.push(ankList[i] + "<br />" + per)
 						if(i != cmd.val-1){
 							ans += ",";
 						}
 					}
 					io.sockets.emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
-					io.sockets.emit("ank", {val:true, opt:ansList});
+					io.sockets.emit("ank", {val:true, opt:ansList, push:false});
 					break;
 				case 12:
 					io.sockets.emit("ank", {val:false});
