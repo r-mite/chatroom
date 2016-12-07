@@ -107,6 +107,23 @@
 			<li class="chat">まずはきくうしさまの名前を登録しよう</li>
 		</ul>
 	</div>
+	<div class="modal fade" id="ankmodal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+					<h4 class="modal-title">タイトル</h4>
+				</div>
+				<div class="modal-body">
+					本文
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary">ボタン</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
@@ -117,6 +134,7 @@
 		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
 		socketio.on("name", function(data){setName(data.name)});
 		socketio.on("deal", function(data){appearButton(data.val)});
+		socketio.on("ank", function(data){appearModal(data.val)});
 		socketio.on("return", function(data){socketio.emit("auto", data);});
 		socketio.on("disconnect", function(){});
 		
@@ -166,6 +184,14 @@
 				$('.dealpass').css({
 					display:"none"
 				});
+			}
+		}
+		
+		function appearModal(val){
+			if(val){
+				$('ankmodal').modal('show');
+			}else{
+				$('ankmodal').modal('hide');
 			}
 		}
 		

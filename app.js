@@ -172,7 +172,8 @@ io.sockets.on("connection", function (socket) {
 							list += ",";
 						}
 					}
-					io.to(roomid).emit("push", {val:1, mes:"アンケート:開始しました。" + list});
+					io.sockets.emit("push", {val:1, mes:"アンケート:開始しました。" + list});
+					io.sockets.emit("ank", {val:true});
 					break;
 				case 11:
 					var list = [];
@@ -191,9 +192,10 @@ io.sockets.on("connection", function (socket) {
 							ans += ",";
 						}
 					}
-					io.to(roomid).emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
+					io.sockets.emit("push", {val:1, mes:"アンケート:結果が出ました。" + ans});
 					break;
 				case 12:
+					io.sockets.emit("ank", {val:false});
 					break;
 				case 13:
 					break;
