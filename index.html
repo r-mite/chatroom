@@ -200,7 +200,7 @@
 				var colmd = "col-md-" + (opt.length <= 4 ? 6 : 4);
 				var abutton = "ankbutton" + (opt.length <= 4 ? "l" : "s") + " ";
 				for(var i=0; i<opt.length; i++){
-					var obj = $('<button class="btn btn-default btn-lg ' + abutton + colmd + '" ' + (push?'onClick="pushMessage(\'' + i + '\');"') + '>' + opt[i] + '</button>');
+					var obj = $('<button class="btn btn-default btn-lg ' + abutton + colmd + '" ' + push?('onClick="pushMessage(\'' + i + '\');"') + '>' + opt[i] + '</button>');
 					$('#ankrow').append(obj);
 				}
 				$('#ankmodal').modal({
