@@ -262,10 +262,8 @@ io.sockets.on("connection", function (socket) {
 		if(ankMax>0){
 			exp = new RegExp("^\\d+$");
 			if(message.search(exp) == 0){
-				if(!ankUser[socket.id]){
-					ankUser[socket.id] = Number(message);
-					socket.emit("push", {val:0, mes:'投票しました。'});
-				}
+				ankUser[socket.id] = Number(message);
+				socket.emit("push", {val:0, mes:'投票しました。'});
 				return;
 			}
 		}

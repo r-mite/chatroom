@@ -59,8 +59,11 @@
 	div.ank{
 		padding-top:10%;
 	}
-	button.ankbutton{
-		height:80px;
+	button.ankbuttons{
+		height:150px;
+	}
+	button.ankbuttonl{
+		height:200px;
 	}
 	textarea{
 		position:fixed;
@@ -195,13 +198,14 @@
 			if(val){
 				$('#ankrow').empty();
 				var colmd = "col-md-" + (opt.length <= 4 ? 6 : 4);
+				var abutton = "ankbutton" + (opt.length <= 4 ? "l" : "s") + " ";
 				for(var i=0; i<opt.length; i++){
-					var obj = $('<button class="btn btn-default btn-lg ankbutton ' + colmd + '">' + opt[i] + '</button>');
+					var obj = $('<button class="btn btn-default btn-lg ' + abutton + colmd + '" onClick="pushMessage(' + i + ');">' + opt[i] + '</button>');
 					$('#ankrow').append(obj);
 				}
 				$('#ankmodal').modal({
 					keyboard:false,
-					backdrop:"static"
+					backdrop:"false"
 				});
 			}else{
 				$('#ankmodal').modal('hide');
