@@ -442,7 +442,7 @@ function checkCommand(cmd){
 	//14:定型アンケートのセット
 	var exp = new RegExp("ankset ");
 	if(cmd.search(exp) == 0){
-		var num = cmd.substr(4, cmd.length-1);
+		var num = Number(cmd.substr(4, cmd.length-1));
 		var list = [];
 		switch(num){
 			case 0:
