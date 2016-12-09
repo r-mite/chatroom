@@ -165,7 +165,9 @@
 			var text = '<span class="glyphicon glyphicon-home"></span>' + num + '/' + max;
 			if(dnum > 0){
 				$(".dealbar").html(Object.keys(dmem).length + '/' + dnum);
-				$(".dealbar").attr('width', Object.keys(dmem).length/dnum + "%");
+				$(".dealbar").css({
+					'width', Object.keys(dmem).length*100/dnum + "%"
+				});
 			}
 			$('li#info').append(text);
 			$('ul#member').empty();
