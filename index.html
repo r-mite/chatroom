@@ -150,6 +150,9 @@
 		
 		//送信部
 		var first_push = false;
+		if(sessionStorage.getItem('uniID') == null){
+			sessionStorage.setItem('uniID', Math.random().toString(36).substring(3,16) + new Date);
+		}
 		console.log(sessionStorage.getItem('uniID'));
 		function pushMessage(text){
 			if(text == ""){
