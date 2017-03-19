@@ -216,8 +216,8 @@ io.sockets.on("connection", function (socket) {
 						io.to(roomid).emit("push", {val:6, mes:"DEAL:防衛失敗"});
 					}else{
 						io.to(roomid).emit("push", {val:6, mes:"DEAL:現在のランキング1位は" + userHash[key] + "!後に続け!(" + (dealList[key] < 0 ? "パス" : dealList[key]) + ")"});
-						if(dealList[key] > 5000){
-							io.sockets.emit("fire", {num:10});
+						if(dealList[key] == dealMax){
+							io.sockets.emit("fire", {num:20});
 						}
 					}
 					io.sockets.emit("deal", {val:false});
