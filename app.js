@@ -256,12 +256,20 @@ io.sockets.on("connection", function (socket) {
 		if(data.value == 1){
 			socket.emit("push", {val:1, mes:"ルームが変更されました"});
 			socket.leave(roomid);
+			if(!userSocket[socket.id])return;
+			var uniID = userSocket[socket.id];
 			delete userHash[uniID];
+			delete userSocket[socket.id];
+			delete userLogIn[uniID];
 		}
 		if(data.value == 4){
 			socket.leave(roomid);
+			if(!userSocket[socket.id])return;
+			var uniID = userSocket[socket.id];
 			var message = "\"" + userHash[uniID] + "\"きくうしさまが退室させられました。";
 			delete userHash[uniID];
+			delete userSocket[socket.id];
+			delete userLogIn[uniID];
 			userCount--;
 			io.sockets.emit("set", mergeSetList());
 			io.sockets.emit("push", {val:1, mes:message});
