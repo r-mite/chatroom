@@ -44,6 +44,7 @@ io.sockets.on("connection", function (socket) {
 		data = JSON.parse(data);
 		var uniID = data.id;
 		var name = data.text;
+		console.log(uniID + ", " + name);
 		//コマンドはルームに入る前から使える
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
