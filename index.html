@@ -150,17 +150,13 @@
 		
 		//送信部
 		var first_push = false;
-		if(sessionStorage.getItem('uniID') == null){
-			sessionStorage.setItem('uniID', Math.random().toString(36).substring(3,16) + new Date);
-		}
-		console.log(sessionStorage.getItem('uniID'));
 		function pushMessage(text){
 			if(text == ""){
 				text = $('#msg_box').val();
 				if(text == "")return;
 			}
-			
-			socketio.emit(first_push?"push":"connected", text);
+			var data = {"id":sessionStorage.getItem('uniID'), "text":text};
+			socketio.json.emit(first_push?"push":"connected", data);
 			$('#msg_box').val('');
 		}
 		
@@ -288,6 +284,9 @@
 		
 		//ページ表示時
 		$(function(){
+			if(sessionStorage.getItem('uniID') == null){
+				sessionStorage.setItem('uniID', Math.random().toString(36).substring(3,16) + new Date());
+			}
 			countFamily(0, 0, 0, 0, 0);
 			$('li.chat')
 				.css({

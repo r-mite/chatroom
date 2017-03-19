@@ -40,7 +40,10 @@ var ankTitle = "";
 io.sockets.on("connection", function (socket) {
 
 //接続開始イベント
-	socket.on("connected", function(name){
+	socket.on("connected", function(data){
+		data = JSON.parse(data);
+		var uniID = data.id;
+		var name = data.text;
 		//コマンドはルームに入る前から使える
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
@@ -91,7 +94,7 @@ io.sockets.on("connection", function (socket) {
 		if(ankMax>0){
 			exp = new RegExp("^\\d+$");
 			if(name.search(exp) == 0){
-				ankUser[socket.id] = Number(name);
+				ankUser[uniID] = Number(name);
 				socket.emit("push", {val:0, mes:'投票しました。'});
 				return;
 			}
@@ -122,7 +125,7 @@ io.sockets.on("connection", function (socket) {
 			}
 		}
 		//入室処理
-		userHash[socket.id] = name;
+		userHash[uniID] = name;
 		socket.join(roomid);
 		userCount++;
 		socket.emit("name", {name:name});
@@ -131,11 +134,14 @@ io.sockets.on("connection", function (socket) {
 	});
 
 //メッセージ送信イベント
-	socket.on("push", function(message){
+	socket.on("push", function(data){
+		data = JSON.parse(message);
+		var uniID = data.id;
+		var message = data.text;
 		//コマンド
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
-		if((remoteAddress == "192.168.3" || userHash[socket.id] == "かえで") && message.search(exp) == 0){
+		if((remoteAddress == "192.168.3" || userHash[uniID] == "かえで") && message.search(exp) == 0){
 			var cmd = checkCommand(message.substr(4));
 			switch(cmd.num){
 				case 1:
@@ -221,7 +227,7 @@ io.sockets.on("connection", function (socket) {
 			return;
 		}
 		//名無し確認<-強制退出後にメッセージを送信
-		if(!(socket.id in userHash)){
+		if(!(uniID in userHash)){
 			socket.emit("push", {val:0, mes:'きくうしさまの名前をおシエテください。'});
 			return;
 		}
@@ -235,23 +241,23 @@ io.sockets.on("connection", function (socket) {
 			var end = false;
 			exp = new RegExp("^deal$");
 			if(message.search(exp) == 0){
-				if(!dealList[socket.id]){
+				if(!dealList[uniID]){
 					dealing--;
 					var rnd = Math.floor( Math.random() * 9999 ) + 1;
-					dealList[socket.id] = rnd;
-					io.to(roomid).emit("push", {val:5, name:userHash[socket.id], mes:rnd + "を出した!"});
+					dealList[uniID] = rnd;
+					io.to(roomid).emit("push", {val:5, name:userHash[uniID], mes:rnd + "を出した!"});
 				}
 				end = true;
 			}
 			exp = new RegExp("^pass$");
 			if(message.search(exp) == 0){
-				if(!dealList[socket.id]){
+				if(!dealList[uniID]){
 					dealing--;
-					dealList[socket.id] = -1;
-					io.to(roomid).emit("push", {val:5, name:userHash[socket.id], mes:"パスした。"});
-				}else if(dealList[socket.id] != -1){
-					dealList[socket.id] = -1;
-					io.to(roomid).emit("push", {val:5, name:userHash[socket.id], mes:"パスした。"});
+					dealList[uniID] = -1;
+					io.to(roomid).emit("push", {val:5, name:userHash[uniID], mes:"パスした。"});
+				}else if(dealList[uniID] != -1){
+					dealList[uniID] = -1;
+					io.to(roomid).emit("push", {val:5, name:userHash[uniID], mes:"パスした。"});
 				}
 				end = true;
 			}
@@ -274,7 +280,7 @@ io.sockets.on("connection", function (socket) {
 		if(ankMax>0){
 			exp = new RegExp("^\\d+$");
 			if(message.search(exp) == 0){
-				ankUser[socket.id] = Number(message);
+				ankUser[uniID] = Number(message);
 				socket.emit("push", {val:0, mes:'投票しました。'});
 				return;
 			}
@@ -289,7 +295,7 @@ io.sockets.on("connection", function (socket) {
 		if(message.search(exp) == 0){
 			num = 3;
 		}
-		io.to(roomid).emit("push", {val:num, name:userHash[socket.id], mes:escape_html(message.substr(0,100))});
+		io.to(roomid).emit("push", {val:num, name:userHash[uniID], mes:escape_html(message.substr(0,100))});
 	});
 
 //自動返信イベント
@@ -297,12 +303,12 @@ io.sockets.on("connection", function (socket) {
 		if(data.value == 1){
 			socket.emit("push", {val:1, mes:"ルームが変更されました"});
 			socket.leave(roomid);
-			delete userHash[socket.id];
+			delete userHash[uniID];
 		}
 		if(data.value == 4){
 			socket.leave(roomid);
-			var message = "\"" + userHash[socket.id] + "\"きくうしさまが退室させられました。";
-			delete userHash[socket.id];
+			var message = "\"" + userHash[uniID] + "\"きくうしさまが退室させられました。";
+			delete userHash[uniID];
 			userCount--;
 			io.sockets.emit("set", mergeSetList());
 			io.sockets.emit("push", {val:1, mes:message});
@@ -314,9 +320,9 @@ io.sockets.on("connection", function (socket) {
 
 //接続終了組み込みイベント
 	socket.on("disconnect", function () {
-		if (userHash[socket.id]) {
-			var message = "\"" + userHash[socket.id] + "\"きくうしさまが退室しました。";
-			delete userHash[socket.id];
+		if (userHash[uniID]) {
+			var message = "\"" + userHash[uniID] + "\"きくうしさまが退室しました。";
+			delete userHash[uniID];
 			userCount--;
 			io.sockets.emit("set", mergeSetList());
 			io.sockets.emit("push", {val:1, mes:message});
@@ -325,15 +331,7 @@ io.sockets.on("connection", function (socket) {
 			}
 		}
 	});
-/*
-	socket.on("change", function(name){
-		if (userHash[socket.id]) {
-			var msg = "\"" + userHash[socket.id] + "\"さんが\"" + name + "\"にコテハンを変更しました。";
-			userHash[socket.id] = name;
-			io.to(roomid).emit("push", {value:msg});
-		}
-	});
-*/
+
 });
 
 //コマンド別の処理
