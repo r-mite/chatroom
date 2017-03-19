@@ -14,6 +14,8 @@ var _ = require('lodash');
 
 // ユーザ管理
 var userHash = {};
+var userSocket = {};
+var userLogIn = {};
 var userCount = 0;
 var userMax = 9999;
 var roomid = 4545;
@@ -40,11 +42,7 @@ var ankTitle = "";
 io.sockets.on("connection", function (socket) {
 
 //接続開始イベント
-	socket.on("connected", function(data){
-		data = JSON.parse(data);
-		var uniID = data.id;
-		var name = data.text;
-		console.log(uniID + ", " + name);
+	socket.on("connected", function(name){
 		//コマンドはルームに入る前から使える
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
@@ -91,15 +89,6 @@ io.sockets.on("connection", function (socket) {
 			socket.emit("push", {val:4, mes:cmd.mes});
 			return;
 		}
-		//ankモード時
-		if(ankMax>0){
-			exp = new RegExp("^\\d+$");
-			if(name.search(exp) == 0){
-				ankUser[uniID] = Number(name);
-				socket.emit("push", {val:0, mes:'投票しました。'});
-				return;
-			}
-		}
 		//人数チェック
 		if(userCount >= userMax){
 			socket.emit("set", {num:userCount, max:userMax, mem:rebuildUser()});
@@ -126,17 +115,20 @@ io.sockets.on("connection", function (socket) {
 			}
 		}
 		//入室処理
+		var uniID = Math.random().toString(36).substring(3,16) + new Date();
 		userHash[uniID] = name;
+		userSocket[socket.id] = uniID;
+		userLogIn[uniID] = true;
 		socket.join(roomid);
 		userCount++;
-		socket.emit("name", {name:name});
+		socket.emit("name", {id:uniID, name:name});
 		io.sockets.emit("set", mergeSetList());
 		io.to(roomid).emit("push", {val:1, mes:'"' + name + '"きくうしさまが入室しました。'});
 	});
 
 //メッセージ送信イベント
 	socket.on("push", function(data){
-		data = JSON.parse(message);
+		data = JSON.parse(data);
 		var uniID = data.id;
 		var message = data.text;
 		//コマンド
@@ -180,47 +172,6 @@ io.sockets.on("connection", function (socket) {
 					break;
 				case 9:
 					io.sockets.emit("deal", {val:false});
-					break;
-				case 10:
-					var list = "";
-					for(var i=0; i<ankMax; i++){
-						list += i + ":" + ankList[i];
-						if(i != ankMax-1){
-							list += ",";
-						}
-					}
-					io.sockets.emit("push", {val:1, mes:"アンケート開始:" + ankTitle + "---" + list});
-					io.sockets.emit("ank", {val:true, title:ankTitle, opt:ankList, push:true});
-					break;
-				case 11:
-					var list = [];
-					var max = 0;
-					for(var i=0; i<cmd.val; i++){
-						list.push(0);
-					}
-					for(var key in ankUser){
-						list[ankUser[key]]++;
-						max++;
-					}
-					var ans = "";
-					var ansList = [];
-					for(var i=0; i<cmd.val; i++){
-						var per = (list[i] == 0 ? 0 : floatFormat(list[i] * 100 / max, 2)) + "%";
-						ans += i + ":" + ankList[i] + "=" + per;
-						ansList.push(ankList[i] + "<br />" + per)
-						if(i != cmd.val-1){
-							ans += ",";
-						}
-					}
-					io.sockets.emit("push", {val:1, mes:"アンケート結果:" + ankTitle + "---" + ans});
-					io.sockets.emit("ank", {val:true, title:ankTitle, opt:ansList, push:false});
-					break;
-				case 12:
-					io.sockets.emit("ank", {val:false});
-					break;
-				case 13:
-					break;
-				case 14:
 					break;
 			}
 			
@@ -277,15 +228,7 @@ io.sockets.on("connection", function (socket) {
 				return;
 			}
 		}
-		//ankモード時
-		if(ankMax>0){
-			exp = new RegExp("^\\d+$");
-			if(message.search(exp) == 0){
-				ankUser[uniID] = Number(message);
-				socket.emit("push", {val:0, mes:'投票しました。'});
-				return;
-			}
-		}
+		
 		//メッセージ送信
 		var num = 2;
 		exp = new RegExp(/[Ａ-Ｚａ-ｚ０-９]/, "g");
@@ -297,6 +240,15 @@ io.sockets.on("connection", function (socket) {
 			num = 3;
 		}
 		io.to(roomid).emit("push", {val:num, name:userHash[uniID], mes:escape_html(message.substr(0,100))});
+	});
+
+//生存確認イベント
+	socket.on("survival", function(data){
+		if(userHash[data] == "")return;
+		userSocket[socket.id] = uniID;
+		userLogIn[uniID] = true;
+		socket.join(roomid);
+		socket.emit("name", {id:data, name:userHash[data]});
 	});
 
 //自動返信イベント
@@ -321,16 +273,21 @@ io.sockets.on("connection", function (socket) {
 
 //接続終了組み込みイベント
 	socket.on("disconnect", function () {
-		if (userHash[uniID]) {
+		if(!userSocket[socket.id])return;
+		var uniID = userSocket[socket.id];
+		userLogIn[uniID] = false;
+		setTimeout(function(){
 			var message = "\"" + userHash[uniID] + "\"きくうしさまが退室しました。";
 			delete userHash[uniID];
+			delete userSocket[socket.id];
+			delete userLogIn[uniID];
 			userCount--;
 			io.sockets.emit("set", mergeSetList());
 			io.sockets.emit("push", {val:1, mes:message});
 			if(userCount <= 0){
 				init();
 			}
-		}
+		}, 10000);
 	});
 
 });
@@ -413,63 +370,7 @@ function checkCommand(cmd){
 	if(cmd.search(exp) == 0){
 		return {num:9, mes:"コマンド:OFFDEALを使用"};
 	}
-	//10,11,12,13:アンケート機能
-	var exp = new RegExp("ank ");
-	if(cmd.search(exp) == 0){
-		var name = cmd.substr(4, cmd.length-1);
-		switch(name){
-			case "q":
-				ankMax = ankList.length;
-				return {num:10, mes:"コマンド：アンケートを開始"};
-				break;
-			case "a":
-				var max = ankMax;
-				ankMax = 0;
-				return {num:11, mes:"コマンド：アンケートの結果", val:max};
-				break;
-			case "r":
-				ankList = [];
-				ankUser = {};
-				ankMax = 0;
-				ankTitle = "";
-				return {num:12, mes:"コマンド：アンケートを終了"};
-				break;
-		}
-		if(ankTitle == ""){
-			ankTitle = name;
-			return {num:13, mes:"コマンド：アンケートタイトル -> " + name};
-		}
-		ankList.push(name);
-		return {num:13, mes:"コマンド：アンケートセット -> " + name};
-	}
-	//14:定型アンケートのセット
-	var exp = new RegExp("ankset ");
-	if(cmd.search(exp) == 0){
-		var num = Number(cmd.substr(6, cmd.length-1));
-		var list = [];
-		switch(num){
-			case 0:
-				ankTitle = "好きな言葉は？";
-				list = ["ふたなり", "種付け"];
-				break;
-			case 1:
-				ankTitle = "好きな挨拶は？";
-				list = ["わこつ", "ｽﾞｺｰ", "イケドン", "おtんtん"];
-				break;
-			case 2:
-				ankTitle = "彼女にしたい星晶獣は？";
-				list = ["ティアマト", "コロッサス", "リヴァイアサン", "ユグドラシル", "シュバリエ", "セレスト"];
-				break;
-			case 3:
-				ankTitle = "今から行きたいHLは？";
-				list = ["ナタク", "フラム＝グラス", "マキュラ・マリウス", "メドゥーサ", "アポロン", "Dエンジェル・オリヴィエ", "ローズクイーン", "プロトバハムート"];
-				break;
-		}
-		for(var i=0; i<list.length; i++){
-			ankList.push(list[i]);
-		}
-		return {num:14, mes:"コマンド：定型アンケートセット -> " + ankTitle};
-	}
+	
 	//-1:該当なし
 	return {num:-1, mes:"ニュージェネかな。"};
 }

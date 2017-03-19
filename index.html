@@ -142,7 +142,7 @@
 		socketio.on("connected", function(name){});
 		socketio.on("set", function(data){countFamily(data.num, data.max, data.mem, data.dnum, data.dmem);});
 		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
-		socketio.on("name", function(data){setName(data.name)});
+		socketio.on("name", function(data){setName(data.id, data.name)});
 		socketio.on("deal", function(data){appearButton(data.val)});
 		socketio.on("ank", function(data){appearModal(data.val, data.title, data.opt, data.push)});
 		socketio.on("return", function(data){socketio.emit("auto", data);});
@@ -158,6 +158,11 @@
 			var data = {"id":sessionStorage.getItem('uniID'), "text":text};
 			socketio.emit(first_push?"push":"connected", JSON.stringify(data));
 			$('#msg_box').val('');
+		}
+		
+		function survivalMessage(){
+			if(sessionStorage.getItem('uniID') == null)return;
+			socketio.emit("survival", sessionStorage.getItem("uniID"));
 		}
 		
 		//受信部
@@ -182,10 +187,11 @@
 			}
 		}
 		
-		function setName(name){
+		function setName(id, name){
 			first_push = true;
+			sessionStorage.setItem("uniID", id);
 			$('#msg_box').attr('placeholder', '例)12345678 つよばはHL');
-			var text = '<strong>'+name+'</strong> なの。'
+			var text = '<strong>'+name+'</strong> なの。';
 			$('li#user').html(text);
 		}
 		
@@ -284,9 +290,7 @@
 		
 		//ページ表示時
 		$(function(){
-			if(sessionStorage.getItem('uniID') == null){
-				sessionStorage.setItem('uniID', Math.random().toString(36).substring(3,16) + new Date());
-			}
+			survivalMessage();
 			countFamily(0, 0, 0, 0, 0);
 			$('li.chat')
 				.css({
