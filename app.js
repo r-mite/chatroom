@@ -127,10 +127,8 @@ io.sockets.on("connection", function (socket) {
 	});
 
 //メッセージ送信イベント
-	socket.on("push", function(data){
-		data = JSON.parse(data);
-		var uniID = data.id;
-		var message = data.text;
+	socket.on("push", function(message){
+		var uniID = socket.id;
 		//コマンド
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
