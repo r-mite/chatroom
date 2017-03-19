@@ -275,6 +275,7 @@ io.sockets.on("connection", function (socket) {
 		var uniID = userSocket[socket.id];
 		userLogIn[uniID] = false;
 		setTimeout(function(){
+			if(userLogIn[uniID])return;
 			var message = "\"" + userHash[uniID] + "\"きくうしさまが退室しました。";
 			delete userHash[uniID];
 			delete userSocket[socket.id];
