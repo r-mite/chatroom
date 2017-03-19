@@ -49,7 +49,7 @@ io.sockets.on("connection", function (socket) {
 			var cmd = checkCommand(name.substr(4));
 			switch(cmd.num){
 				case 1:
-					for(key in userHash){
+					for(key in userSocket){
 						io.to(key).emit("return", {value:1});
 					}
 					break;
@@ -135,7 +135,7 @@ io.sockets.on("connection", function (socket) {
 			var cmd = checkCommand(message.substr(4));
 			switch(cmd.num){
 				case 1:
-					for(key in userHash){
+					for(key in userSocket){
 						io.to(key).emit("return", {value:1});
 					}
 					break;
