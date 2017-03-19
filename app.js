@@ -128,7 +128,7 @@ io.sockets.on("connection", function (socket) {
 
 //メッセージ送信イベント
 	socket.on("push", function(message){
-		var uniID = socket.id;
+		var uniID = userSocket[socket.id];
 		//コマンド
 		var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11,9);
 		var exp = new RegExp("cmd ");
