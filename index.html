@@ -162,7 +162,7 @@
 		function survivalMessage(){
 			if(sessionStorage.getItem('uniID') == null)return;
 			console.log("survival");
-			socketio.emit("survival", sessionStorage.getItem("uniID"));
+			socketio.emit("survival", sessionStorage.getItem('uniID'));
 		}
 		
 		//受信部
@@ -190,7 +190,7 @@
 		function setName(id, name){
 			console.log("setName");
 			first_push = true;
-			sessionStorage.setItem("uniID", id);
+			sessionStorage.setItem('uniID', id);
 			$('#msg_box').attr('placeholder', '例)12345678 つよばはHL');
 			var text = '<strong>'+name+'</strong> なの。';
 			$('li#user').html(text);

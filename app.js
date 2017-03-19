@@ -241,12 +241,12 @@ io.sockets.on("connection", function (socket) {
 	});
 
 //生存確認イベント
-	socket.on("survival", function(data){
-		if(userHash[data] == "")return;
+	socket.on("survival", function(uniID){
+		if(!userHash[uniID])return;
 		userSocket[socket.id] = uniID;
 		userLogIn[uniID] = true;
 		socket.join(roomid);
-		socket.emit("name", {id:data, name:userHash[data]});
+		socket.emit("name", {id:uniID, name:userHash[uniID]});
 	});
 
 //自動返信イベント
