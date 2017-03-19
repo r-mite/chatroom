@@ -156,7 +156,7 @@
 				if(text == "")return;
 			}
 			var data = {"id":sessionStorage.getItem('uniID'), "text":text};
-			socketio.json.emit(first_push?"push":"connected", data);
+			socketio.emit(first_push?"push":"connected", JSON.stringify(data));
 			$('#msg_box').val('');
 		}
 		
