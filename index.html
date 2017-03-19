@@ -150,11 +150,13 @@
 		
 		//送信部
 		var first_push = false;
+		console.log(sessionStorage.getItem('uniID'));
 		function pushMessage(text){
 			if(text == ""){
 				text = $('#msg_box').val();
 				if(text == "")return;
 			}
+			
 			socketio.emit(first_push?"push":"connected", text);
 			$('#msg_box').val('');
 		}
