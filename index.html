@@ -103,7 +103,6 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="javascript:document.location.reload();"><span class="glyphicon glyphicon-remove"></span></a></li>
-					<li><a href="javascript:createFirework(25,187,5,1,null,null,null,null,false,true);"><span class="glyphicon glyphicon-remove"></span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -122,21 +121,6 @@
 			<li class="chat">まずはきくうしさまの名前を登録しよう</li>
 		</ul>
 	</div>
-	<div class="modal fade" id="ankmodal" tabindex="-1">
-		<div class="modal-dialog modal-lg ank">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title"></h4>
-				</div>
-				<div class="modal-body">
-					<div class="container-fluid">
-						<div class="row" id="ankrow"></div>
-					</div>
-				</div>
-				<div class="modal-footer"></div>
-			</div>
-		</div>
-	</div>
 	<div id="fireworks-template">
 		<div id="fw" class="firework"></div>
 		<div id="fp" class="fireworkParticle"><img src="fireworks.js/image/particles.gif" alt="" /></div>
@@ -152,7 +136,7 @@
 		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
 		socketio.on("name", function(data){setName(data.id, data.name)});
 		socketio.on("deal", function(data){appearButton(data.val)});
-		socketio.on("ank", function(data){appearModal(data.val, data.title, data.opt, data.push)});
+		socketio.on("fire", function(data){displayFireworks(data.num)});
 		socketio.on("return", function(data){socketio.emit("auto", data);});
 		socketio.on("disconnect", function(){});
 		
@@ -216,23 +200,12 @@
 			}
 		}
 		
-		function appearModal(val, title, opt, push){
-			if(val){
-				$('.modal-title').html("アンケート:" + title);
-				$('#ankrow').empty();
-				var colmd = "col-md-" + (opt.length <= 4 ? 6 : 4);
-				var abutton = "ankbutton" + (opt.length <= 4 ? "l" : "s") + " ";
-				for(var i=0; i<opt.length; i++){
-					var obj = $('<button class="btn btn-default btn-lg col-xs-6 ' + abutton + colmd + '" ' + (push?('onClick="pushMessage(\'' + i + '\');"'):'') + '>' + opt[i] + '</button>');
-					$('#ankrow').append(obj);
-				}
-				$('#ankmodal').modal({
-					keyboard:true,
-					backdrop:"static"
-				});
-			}else{
-				$('#ankmodal').modal('hide');
-			}
+		function displayFireworks(num){
+			if(num < 1)return;
+			setTimeout(function(){
+				createFirework(25,187,5,1,null,null,null,null,false,true);
+				displayFireworks(num-1);
+			}, 1000 - Math.random()*500);
 		}
 		
 		function addMessage(num, name, mes){

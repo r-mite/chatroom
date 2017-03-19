@@ -22,10 +22,9 @@ var roomid = 4545;
 var dealing = -1;
 var dealList = {};
 var dealUserMax = -1;
-var ankList = [];
-var ankUser = {};
-var ankMax = 0;
-var ankTitle = "";
+var dealMax = 9999;
+
+
 
 //表示メッセージ種類
 /*
@@ -193,7 +192,7 @@ io.sockets.on("connection", function (socket) {
 			if(message.search(exp) == 0){
 				if(!dealList[uniID]){
 					dealing--;
-					var rnd = Math.floor( Math.random() * 9999 ) + 1;
+					var rnd = Math.floor( Math.random() * dealMax ) + 1;
 					dealList[uniID] = rnd;
 					io.to(roomid).emit("push", {val:5, name:userHash[uniID], mes:rnd + "を出した!"});
 				}
@@ -217,6 +216,9 @@ io.sockets.on("connection", function (socket) {
 						io.to(roomid).emit("push", {val:6, mes:"DEAL:防衛失敗"});
 					}else{
 						io.to(roomid).emit("push", {val:6, mes:"DEAL:現在のランキング1位は" + userHash[key] + "!後に続け!(" + (dealList[key] < 0 ? "パス" : dealList[key]) + ")"});
+						if(dealList[key] > 5000){
+							io.sockets.emit("fire", {num:10});
+						}
 					}
 					io.sockets.emit("deal", {val:false});
 				});
