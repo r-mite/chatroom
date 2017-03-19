@@ -281,7 +281,8 @@ io.sockets.on("connection", function (socket) {
 		}
 		//メッセージ送信
 		var num = 2;
-		message = message.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+		exp = new RegExp(/[Ａ-Ｚａ-ｚ０-９]/, "g");
+		message = message.replace(exp, function(s) {
 			return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
 		});
 		exp = new RegExp("\\b([a-zA-Z0-9]{5}|[a-zA-Z0-9]{8})\\b");
