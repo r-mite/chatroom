@@ -71,6 +71,7 @@
 	//-->
 	</style>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="fireworks.js/script/fireworks.js"></script>
 </head>
 
 <body>
@@ -101,6 +102,7 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="javascript:document.location.reload();"><span class="glyphicon glyphicon-remove"></span></a></li>
+					<li><a href="createFirework(27,24,1,4,null,null,null,null,false,true);"><span class="glyphicon glyphicon-remove"></span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -136,7 +138,6 @@
 	</div>
 	
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="fireworks.js/script/fireworks.js"></script>
 	<script type="text/javascript">
 		var socketio = io.connect(location.href);
 		//コールバック
@@ -152,7 +153,6 @@
 		//送信部
 		var first_push = false;
 		function pushMessage(text){
-		createFirework(27,24,1,4,null,null,null,null,false,true);
 			if(text == ""){
 				text = $('#msg_box').val();
 				if(text == "")return;
