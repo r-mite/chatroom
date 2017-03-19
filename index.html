@@ -161,6 +161,7 @@
 		
 		function survivalMessage(){
 			if(sessionStorage.getItem('uniID') == null)return;
+			console.log("survival");
 			socketio.emit("survival", sessionStorage.getItem("uniID"));
 		}
 		
@@ -187,6 +188,7 @@
 		}
 		
 		function setName(id, name){
+			console.log("setName");
 			first_push = true;
 			sessionStorage.setItem("uniID", id);
 			$('#msg_box').attr('placeholder', '例)12345678 つよばはHL');
