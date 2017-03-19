@@ -151,6 +151,7 @@
 		//送信部
 		var first_push = false;
 		function pushMessage(text){
+		createFirework(27,24,1,4,null,null,null,null,false,true);
 			if(text == ""){
 				text = $('#msg_box').val();
 				if(text == "")return;
@@ -307,6 +308,8 @@
 			appearButton(false);
 		});
 	</script>
+	<script src="fireworks.js/script/fireworks.js"></script>
+	<script src="fireworks.js/script/soundmanager2.js"></script>
 	<script src="umi/js/bootstrap.min.js"></script>
 </body>
 
