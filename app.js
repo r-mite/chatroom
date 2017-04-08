@@ -286,6 +286,7 @@ io.sockets.on("connection", function (socket) {
 		userLogIn[uniID] = false;
 		setTimeout(function(){
 			if(userLogIn[uniID])return;
+			if(userHash[uniID])return;
 			var message = "\"" + userHash[uniID] + "\"きくうしさまが退室しました。";
 			delete userHash[uniID];
 			delete userSocket[socket.id];
@@ -296,7 +297,7 @@ io.sockets.on("connection", function (socket) {
 			if(userCount <= 0){
 				init();
 			}
-		}, 10000);
+		}, 5000);
 	});
 
 });
