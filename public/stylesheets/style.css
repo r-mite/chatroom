@@ -1,7 +1,7 @@
 body{
     line-height:1.5;
     padding:120px 10px;
-    background-image:url(sky.jpg);
+    background-image:url(../images/sky.jpg);
     background-position:center center;
     background-repeat:no-repeat;
     background-attachment:fixed;
