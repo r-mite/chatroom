@@ -1,2 +1,5 @@
 #!/usr/bin/env node
-var server = require('../app/server');
+
+var WebSock = require('../app/websock');
+
+var w = new WebSock(3000);
