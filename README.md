@@ -6,3 +6,9 @@
 cd $APP_HOME(プロジェクトホーム)
 npm start
 ```
+
+# 環境構築
+```
+cd $APP_HOME(プロジェクトホーム)
+npm install
+```
