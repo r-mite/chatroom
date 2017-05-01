@@ -552,7 +552,7 @@ function createFirework(nRadius,nParticles,nCircles,nBurstType,startX,startY,bur
 
   if (fc.isEmpty(obeyBoundaries)) {
     obeyBoundaries = Math.random()>0.5;
-  }  
+  }
 
   // update screen coordinates
   fc.getWindowCoords();
@@ -561,7 +561,7 @@ function createFirework(nRadius,nParticles,nCircles,nBurstType,startX,startY,bur
 
 }
 
-soundManager.url = './swf/';
+soundManager.url = 'fireworks.js/swf/';
 soundManager.useHighPerformance = true;
 soundManager.useHTML5Audio = true;
 soundManager.wmode = 'transparent';
@@ -585,7 +585,7 @@ soundManager.onready(function() {
     if (sounds.hasOwnProperty(item)) {
       soundManager.createSound({
         id: item,
-        url: 'audio/' + sounds[item],
+        url: 'fireworks.js/audio/' + sounds[item],
         autoLoad: true
       });
     }
