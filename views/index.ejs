@@ -1,220 +1,292 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link href="umi/css/bootstrap.min.css" rel="stylesheet">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  </head>
-  <body>
-  	<nav class="navbar navbar-default navbar-fixed-top">
-  		<div class="container-fluid">
-  			<div class="navbar-header col-md-4">
-  				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-  					<span class="sr-only">Toggle navigation</span>
-  					<span class="icon-bar"></span>
-  					<span class="icon-bar"></span>
-  					<span class="icon-bar"></span>
-  				</button>
-  				<form class="navbar-form navbar-left col-xs-10 col-md-12">
-  					<div class="form-group col-xs-9">
-  						<input type="text" class="form-control text" id="msg_box" autocomplete="off" placeholder="例)ANAKIN">
-  					</div>
-  					<button type="submit" class="btn btn-default push col-xs-3" id="msg_button" onClick="pushMessage('');return false;">送信</button>
-  				</form>
-  			</div>
-  			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-  				<ul class="nav navbar-nav">
-  					<li class="navbar-text" id="user"></li>
-  					<li class="navbar-text" id="info"></li>
-  					<li class="dropdown">
-  						<a href="" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Member <span class="caret"></span></a>
-  						<ul class="dropdown-menu" id=member></ul>
-  					</li>
-  				</ul>
-  				<ul class="nav navbar-nav navbar-right">
-  					<li><a href="javascript:document.location.reload();"><span class="glyphicon glyphicon-remove"></span></a></li>
-  				</ul>
-  			</div>
-  		</div>
-  	</nav>
-  	<div class="alert alert-info dealpass">
-  		<div class="progress progress-striped active">
-  			<div class="progress-bar dealbar" style="width:0%"></div>
-  		</div>
-  		<button type="button" class="btn btn-info" onClick="pushMessage('deal');">Deal</button>
-  		<button type="button" class="btn btn-danger" onClick="pushMessage('pass');">Pass</button>
-  	</div>
-  	<div id="alert"></div>
-  	<div id="log">
-  		<ul class="chatlist">
-  			<li class="chat">グラブル待機ルームへようこそ！</li>
-  			<li class="chat">まずはきくうしさまの名前を登録しよう</li>
-  		</ul>
-  	</div>
+<html lang="ja">
 
-  	<script src="/socket.io/socket.io.js"></script>
-  	<script type="text/javascript">
-  		var socketio = io.connect(location.href);
-  		//コールバック
-  		socketio.on("connected", function(name){});
-  		socketio.on("set", function(data){countFamily(data.num, data.max, data.mem, data.dnum, data.dmem);});
-  		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
-  		socketio.on("name", function(data){setName(data.id, data.name)});
-  		socketio.on("deal", function(data){appearButton(data.val)});
-  		socketio.on("fire", function(data){displayFireworks(data.num)});
-  		socketio.on("return", function(data){socketio.emit("auto", data);});
-  		socketio.on("disconnect", function(){});
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>グラブル待機ルーム</title>
+	<link href="umi/css/bootstrap.min.css" rel="stylesheet">
+	<link href="fireworks.js/style/fireworks.css" rel="stylesheet">
+	<style type="text/css">
+	<!--
+	body{
+		line-height:1.5;
+		padding:120px 10px;
+		background-image:url(images/sky.jpg);
+		background-position:center center;
+		background-repeat:no-repeat;
+		background-attachment:fixed;
+		background-size:cover;
+		background-color:#add8e6;
+	}
+	li.chat{
+		background:#ffffff;
+		margin-bottom:5px;
+		list-style:none;
+		padding:10px;
+		position:relative;
+		border-radius:10px;
+		-webkit-border-radius:10px;
+		-moz-border-radius:10px;
+	}
+	li.pat0{
+		color:#800000;
+	}
+	li.pat1{
+		color:#000080;
+	}
+	li.pat2{
+	}
+	li.pat3{
+		font-weight:bold;
+	}
+	li.pat3:hover{
+		background:#ffff00;
+	}
+	li.pat4{
+		color:#008000;
+	}
+	li.pat5{
+		background:#000000;
+		color:#ffffff;
+	}
+	li.pat6{
+		background:#000000;
+		color:#ffff00;
+	}
+	div.modalbox{
+		opacity:0;
+	}
+	div.ank{
+		padding-top:15%;
+	}
+	button.ankbuttons{
+		height:150px;
+	}
+	button.ankbuttonl{
+		height:200px;
+	}
+	textarea{
+		position:fixed;
+	}
+	//-->
+	</style>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="fireworks.js/script/fireworks.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header col-md-4">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<form class="navbar-form navbar-left col-xs-10 col-md-12">
+					<div class="form-group col-xs-9">
+						<input type="text" class="form-control text" id="msg_box" autocomplete="off" placeholder="例)ANAKIN">
+					</div>
+					<button type="submit" class="btn btn-default push col-xs-3" id="msg_button" onClick="pushMessage('');return false;">送信</button>
+				</form>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="navbar-text" id="user"></li>
+					<li class="navbar-text" id="info"></li>
+					<li class="dropdown">
+						<a href="" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Member <span class="caret"></span></a>
+						<ul class="dropdown-menu" id=member></ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="javascript:document.location.reload();"><span class="glyphicon glyphicon-remove"></span></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="alert alert-info dealpass">
+		<div class="progress progress-striped active">
+			<div class="progress-bar dealbar" style="width:0%"></div>
+		</div>
+		<button type="button" class="btn btn-info" onClick="pushMessage('deal');">Deal</button>
+		<button type="button" class="btn btn-danger" onClick="pushMessage('pass');">Pass</button>
+	</div>
+	<div id="alert"></div>
+	<div id="log">
+		<ul class="chatlist">
+			<li class="chat">グラブル待機ルームへようこそ！</li>
+			<li class="chat">まずはきくうしさまの名前を登録しよう</li>
+		</ul>
+	</div>
+	<div id="fireworks-template">
+		<div id="fw" class="firework"></div>
+		<div id="fp" class="fireworkParticle"><img src="fireworks.js/image/particles.gif" alt="" /></div>
+	</div>
+	<div id="fireContainer"></div>
 
-  		//送信部
-  		var first_push = false;
-  		function pushMessage(text){
-  			if(text == ""){
-  				text = $('#msg_box').val();
-  				if(text == "")return;
-  			}
-  			socketio.emit(first_push?"push":"connected", text);
-  			$('#msg_box').val('');
-  		}
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		var socketio = io.connect(location.href);
+		//コールバック
+		socketio.on("connected", function(name){});
+		socketio.on("set", function(data){countFamily(data.num, data.max, data.mem, data.dnum, data.dmem);});
+		socketio.on("push", function(data){addMessage(data.val, data.name, data.mes);});
+		socketio.on("name", function(data){setName(data.id, data.name)});
+		socketio.on("deal", function(data){appearButton(data.val)});
+		socketio.on("fire", function(data){displayFireworks(data.num)});
+		socketio.on("return", function(data){socketio.emit("auto", data);});
+		socketio.on("disconnect", function(){});
 
-  		function survivalMessage(){
-  			if(sessionStorage.getItem('uniID') == null)return;
-  			console.log("survival");
-  			socketio.emit("survival", sessionStorage.getItem('uniID'));
-  		}
+		//送信部
+		var first_push = false;
+		function pushMessage(text){
+			if(text == ""){
+				text = $('#msg_box').val();
+				if(text == "")return;
+			}
+			socketio.emit(first_push?"push":"connected", text);
+			$('#msg_box').val('');
+		}
 
-  		//受信部
-  		function countFamily(num, max, mem, dnum, dmem){
-  			$('li#info').empty();
-  			var text = '<span class="glyphicon glyphicon-home"></span>' + num + '/' + max;
-  			if(dnum > 0){
-  				$(".dealbar").html(Object.keys(dmem).length + '/' + dnum);
-  				$(".dealbar").css({
-  					width:Object.keys(dmem).length*100/dnum + "%"
-  				});
-  			}
-  			$('li#info').append(text);
-  			$('ul#member').empty();
-  			for(key in mem){
-  				if(dnum > 0){
-  					text = '<li><a href="" onClick="return false;"><span class="label label-' + (dmem[key] ? 'success">deal</span>' : 'default">no deal</span>') + mem[key] + '</a></li>';
-  				}else{
-  					text = '<li><a href="" onClick="return false;">' + mem[key] + '</a></li>';
-  				}
-  				$('ul#member').append(text);
-  			}
-  		}
+		function survivalMessage(){
+			if(sessionStorage.getItem('uniID') == null)return;
+			console.log("survival");
+			socketio.emit("survival", sessionStorage.getItem('uniID'));
+		}
 
-  		function setName(id, name){
-  			console.log("setName");
-  			first_push = true;
-  			sessionStorage.setItem('uniID', id);
-  			$('#msg_box').attr('placeholder', '例)12345678 つよばはHL');
-  			var text = '<strong>'+name+'</strong> なの。';
-  			$('li#user').html(text);
-  		}
+		//受信部
+		function countFamily(num, max, mem, dnum, dmem){
+			$('li#info').empty();
+			var text = '<span class="glyphicon glyphicon-home"></span>' + num + '/' + max;
+			if(dnum > 0){
+				$(".dealbar").html(Object.keys(dmem).length + '/' + dnum);
+				$(".dealbar").css({
+					width:Object.keys(dmem).length*100/dnum + "%"
+				});
+			}
+			$('li#info').append(text);
+			$('ul#member').empty();
+			for(key in mem){
+				if(dnum > 0){
+					text = '<li><a href="" onClick="return false;"><span class="label label-' + (dmem[key] ? 'success">deal</span>' : 'default">no deal</span>') + mem[key] + '</a></li>';
+				}else{
+					text = '<li><a href="" onClick="return false;">' + mem[key] + '</a></li>';
+				}
+				$('ul#member').append(text);
+			}
+		}
 
-  		function appearButton(val){
-  			if(val){
-  				$('.dealpass').css({
-  					display:""
-  				});
-  			}else{
-  				$('.dealpass').css({
-  					display:"none"
-  				});
-  			}
-  		}
+		function setName(id, name){
+			console.log("setName");
+			first_push = true;
+			sessionStorage.setItem('uniID', id);
+			$('#msg_box').attr('placeholder', '例)12345678 つよばはHL');
+			var text = '<strong>'+name+'</strong> なの。';
+			$('li#user').html(text);
+		}
 
-  		function displayFireworks(num){
-  			if(num < 1)return;
-  			setTimeout(function(){
-  				createFirework(25,187,5,1,null,null,null,null,false,true);
-  				displayFireworks(num-1);
-  			}, 1000 - Math.floor(Math.random()*700));
-  		}
+		function appearButton(val){
+			if(val){
+				$('.dealpass').css({
+					display:""
+				});
+			}else{
+				$('.dealpass').css({
+					display:"none"
+				});
+			}
+		}
 
-  		function addMessage(num, name, mes){
-  			var obj = $('<li class="' + 'chat pat' + num + '"/>')
-  				.css({
-  					right:'40px',
-  					opacity:0
-  				});
-  			var text = '[' + new Date().toLocaleTimeString() + '] ' + mes;
-  			if(name !== void 0){
-  				text += " by " + name;
-  			}
-  			if(num == 3){
-  				obj.attr('data-room', mes);
-  				obj.attr('onClick', 'copyList(this);');
-  			}
-  			obj.html(text);
-  			$('ul.chatlist').prepend(obj);
-  			obj.animate({
-  				right:'0',
-  				opacity:1
-  			}, 700);
-  		}
+		function displayFireworks(num){
+			if(num < 1)return;
+			setTimeout(function(){
+				createFirework(25,187,5,1,null,null,null,null,false,true);
+				displayFireworks(num-1);
+			}, 1000 - Math.floor(Math.random()*700));
+		}
 
-  		//クリップボードコピー
-  		function copyList(obj){
-  			//コピー処理
-  			var copyFrom = $('<textarea>');
-  			copyFrom.val(obj.dataset.room);
-  			$('body').append(copyFrom);
-  			copyFrom.select();
-  			document.execCommand('copy');
-  			copyFrom.remove();
-  			//アラート処理
-  			var modal = $('<div class="alert alert-dismissible alert-success modalbox"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div>');
-  			$('div#alert').append(modal);
-  			slideIn().then(slideOut);
-  		}
+		function addMessage(num, name, mes){
+			var obj = $('<li class="' + 'chat pat' + num + '"/>')
+				.css({
+					right:'40px',
+					opacity:0
+				});
+			var text = '[' + new Date().toLocaleTimeString() + '] ' + mes;
+			if(name !== void 0){
+				text += " by " + name;
+			}
+			if(num == 3){
+				obj.attr('data-room', mes);
+				obj.attr('onClick', 'copyList(this);');
+			}
+			obj.html(text);
+			$('ul.chatlist').prepend(obj);
+			obj.animate({
+				right:'0',
+				opacity:1
+			}, 700);
+		}
 
-  		//モーダルスライド
-  		function slideIn(){
-  			var d = new $.Deferred;
-  			var modal = $('div.modalbox');
-  			modal.animate({
-  				opacity:1
-  			}, 700, function(){
-  				d.resolve();
-  			});
-  			return d.promise();
-  		}
+		//クリップボードコピー
+		function copyList(obj){
+			//コピー処理
+			var copyFrom = $('<textarea>');
+			copyFrom.val(obj.dataset.room);
+			$('body').append(copyFrom);
+			copyFrom.select();
+			document.execCommand('copy');
+			copyFrom.remove();
+			//アラート処理
+			var modal = $('<div class="alert alert-dismissible alert-success modalbox"><button type="button" class="close" data-dismiss="alert">×</button>ファクシミリしました。</div>');
+			$('div#alert').append(modal);
+			slideIn().then(slideOut);
+		}
 
-  		function slideOut(){
-  			var d = new $.Deferred;
-  			var modal = $('div.modalbox');
-  			modal.delay(2000)
-  				.animate({
-  				opacity:0
-  			}, 700, function(){
-  				modal.remove();
-  				d.resolve();
-  			});
-  			return d.promise();
-  		}
+		//モーダルスライド
+		function slideIn(){
+			var d = new $.Deferred;
+			var modal = $('div.modalbox');
+			modal.animate({
+				opacity:1
+			}, 700, function(){
+				d.resolve();
+			});
+			return d.promise();
+		}
 
-  		//ページ表示時
-  		$(function(){
-  			survivalMessage();
-  			countFamily(0, 0, 0, 0, 0);
-  			$('li.chat')
-  				.css({
-  					right:'40px',
-  					opacity:0
-  				})
-  				.each(function(i){
-  					$(this).delay(300*i).animate({
-  						right:'0',
-  						opacity:1
-  					}, 700);
-  				});
-  			appearButton(false);
-  		});
-  	</script>
-  	<script src="umi/js/bootstrap.min.js"></script>
-  </body>
+		function slideOut(){
+			var d = new $.Deferred;
+			var modal = $('div.modalbox');
+			modal.delay(2000)
+				.animate({
+				opacity:0
+			}, 700, function(){
+				modal.remove();
+				d.resolve();
+			});
+			return d.promise();
+		}
 
-  </html>
+		//ページ表示時
+		$(function(){
+			survivalMessage();
+			countFamily(0, 0, 0, 0, 0);
+			$('li.chat')
+				.css({
+					right:'40px',
+					opacity:0
+				})
+				.each(function(i){
+					$(this).delay(300*i).animate({
+						right:'0',
+						opacity:1
+					}, 700);
+				});
+			appearButton(false);
+		});
+	</script>
+	<script src="umi/js/bootstrap.min.js"></script>
+</body>
+</html>
