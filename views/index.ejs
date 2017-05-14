@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>グラブル待機ルーム</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon">
 	<link href="umi/css/bootstrap.min.css" rel="stylesheet">
 	<link href="fireworks.js/style/fireworks.css" rel="stylesheet">
 	<style type="text/css">
@@ -12,7 +13,7 @@
 	body{
 		line-height:1.5;
 		padding:120px 10px;
-		background-image:url(sky.jpg);
+		background-image:url(images/sky.jpg);
 		background-position:center center;
 		background-repeat:no-repeat;
 		background-attachment:fixed;
@@ -72,9 +73,9 @@
 	//-->
 	</style>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="fireworks.js/script/soundmanager2-nodebug-jsmin.js"></script>
 	<script src="fireworks.js/script/fireworks.js"></script>
 </head>
-
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container-fluid">
@@ -126,7 +127,7 @@
 		<div id="fp" class="fireworkParticle"><img src="fireworks.js/image/particles.gif" alt="" /></div>
 	</div>
 	<div id="fireContainer"></div>
-	
+
 	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
 		var socketio = io.connect(location.href);
@@ -139,7 +140,7 @@
 		socketio.on("fire", function(data){displayFireworks(data.num)});
 		socketio.on("return", function(data){socketio.emit("auto", data);});
 		socketio.on("disconnect", function(){});
-		
+
 		//送信部
 		var first_push = false;
 		function pushMessage(text){
@@ -150,13 +151,13 @@
 			socketio.emit(first_push?"push":"connected", text);
 			$('#msg_box').val('');
 		}
-		
+
 		function survivalMessage(){
 			if(sessionStorage.getItem('uniID') == null)return;
 			console.log("survival");
 			socketio.emit("survival", sessionStorage.getItem('uniID'));
 		}
-		
+
 		//受信部
 		function countFamily(num, max, mem, dnum, dmem){
 			$('li#info').empty();
@@ -178,7 +179,7 @@
 				$('ul#member').append(text);
 			}
 		}
-		
+
 		function setName(id, name){
 			console.log("setName");
 			first_push = true;
@@ -187,7 +188,7 @@
 			var text = '<strong>'+name+'</strong> なの。';
 			$('li#user').html(text);
 		}
-		
+
 		function appearButton(val){
 			if(val){
 				$('.dealpass').css({
@@ -199,7 +200,7 @@
 				});
 			}
 		}
-		
+
 		function displayFireworks(num){
 			if(num < 1)return;
 			setTimeout(function(){
@@ -207,7 +208,7 @@
 				displayFireworks(num-1);
 			}, 1000 - Math.floor(Math.random()*700));
 		}
-		
+
 		function addMessage(num, name, mes){
 			var obj = $('<li class="' + 'chat pat' + num + '"/>')
 				.css({
@@ -229,7 +230,7 @@
 				opacity:1
 			}, 700);
 		}
-		
+
 		//クリップボードコピー
 		function copyList(obj){
 			//コピー処理
@@ -244,7 +245,7 @@
 			$('div#alert').append(modal);
 			slideIn().then(slideOut);
 		}
-		
+
 		//モーダルスライド
 		function slideIn(){
 			var d = new $.Deferred;
@@ -256,7 +257,7 @@
 			});
 			return d.promise();
 		}
-		
+
 		function slideOut(){
 			var d = new $.Deferred;
 			var modal = $('div.modalbox');
@@ -269,7 +270,7 @@
 			});
 			return d.promise();
 		}
-		
+
 		//ページ表示時
 		$(function(){
 			survivalMessage();
@@ -290,5 +291,4 @@
 	</script>
 	<script src="umi/js/bootstrap.min.js"></script>
 </body>
-
 </html>
