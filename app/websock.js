@@ -7,6 +7,7 @@ class WebSock {
         var Server = require('../app/server');
         var s = new Server();
         this.sock = io.listen(s.listen(port));
+        this.ready(s);
     }
 }
 
@@ -47,15 +48,18 @@ var server = require("http").createServer(function(req, res) {
 5:ディール通常メッセージ
 6:ディールシステムメッセージ
 */
-
+    var io = this.sock;
     // 2.イベントの定義
-    this.sock.sockets.on("connection", function(socket) {
+    io.sockets.on("connection", function(socket) {
+        console.log("connection start");
 
         //接続開始イベント
         socket.on("connected", function(name) {
+            console.log("conneced" + name);
             //コマンドはルームに入る前から使える
             var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
             var exp = new RegExp("cmd ");
+
             if (remoteAddress == "192.168.3" && name.search(exp) == 0) {
                 var cmd = checkCommand(name.substr(4));
                 switch (cmd.num) {
