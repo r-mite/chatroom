@@ -411,176 +411,179 @@ var server = require("http").createServer(function(req, res) {
         });
 
     });
-}
-//コマンド別の処理
-function checkCommand(cmd) {
-    //1:変数初期化
-    var exp = new RegExp("reset");
-    if (cmd.search(exp) == 0) {
-        init();
-        return {num: 1, mes: "コマンド:RESETを使用"};
-    }
-    //2:ルーム最大値を設定
-    exp = new RegExp("max \\d+");
-    if (cmd.search(exp) == 0) {
-        var max = cmd.substr(4, cmd.length - 1);
-        userMax = Number(max);
-        return {
-            num: 2,
-            mes: "コマンド:MAXを使用 -> " + max
-        };
-    }
-    //3:コマンド確認
-    exp = new RegExp("list");
-    if (cmd.search(exp) == 0) {
-        var list = "コマンド:LISTを使用 ->" +
-        "<br />reset: 初期化" +
-        "<br />max [数値]: ルーム容量" +
-        "<br />list: コマンド確認" +
-        "<br />del [名前]: 強制退室" +
-        "<br />deal: ディール" +
-        "<br />rank [数値]: ランキング" +
-        "<br />ondeal: ボタン表示" +
-        "<br />offdeal: ボタン非表示";
-        return {num: 3, mes: list};
-    }
-    //4:強制退室
-    exp = new RegExp("del ");
-    if (cmd.search(exp) == 0) {
-        var name = cmd.substr(4, cmd.length - 1);
-        var id;
-        for (key in userHash) {
-            if (name == userHash[key]) {
-                id = key;
-                break;
+
+    //コマンド別の処理
+    function checkCommand(cmd) {
+        //1:変数初期化
+        var exp = new RegExp("reset");
+        if (cmd.search(exp) == 0) {
+            init();
+            return {num: 1, mes: "コマンド:RESETを使用"};
+        }
+        //2:ルーム最大値を設定
+        exp = new RegExp("max \\d+");
+        if (cmd.search(exp) == 0) {
+            var max = cmd.substr(4, cmd.length - 1);
+            userMax = Number(max);
+            return {
+                num: 2,
+                mes: "コマンド:MAXを使用 -> " + max
+            };
+        }
+        //3:コマンド確認
+        exp = new RegExp("list");
+        if (cmd.search(exp) == 0) {
+            var list = "コマンド:LISTを使用 ->" +
+            "<br />reset: 初期化" +
+            "<br />max [数値]: ルーム容量" +
+            "<br />list: コマンド確認" +
+            "<br />del [名前]: 強制退室" +
+            "<br />deal: ディール" +
+            "<br />rank [数値]: ランキング" +
+            "<br />ondeal: ボタン表示" +
+            "<br />offdeal: ボタン非表示";
+            return {num: 3, mes: list};
+        }
+        //4:強制退室
+        exp = new RegExp("del ");
+        if (cmd.search(exp) == 0) {
+            var name = cmd.substr(4, cmd.length - 1);
+            var id;
+            for (key in userHash) {
+                if (name == userHash[key]) {
+                    id = key;
+                    break;
+                }
             }
+            if (id === void 0) {
+                return {num: 4, mes: "コマンド:DELに対応する名前はありません。", val: id};
+            }
+            return {
+                num: 4,
+                mes: "コマンド:DELを使用 -> \"" + name + "\"を退室させました。",
+                val: id
+            };
         }
-        if (id === void 0) {
-            return {num: 4, mes: "コマンド:DELに対応する名前はありません。", val: id};
+        //5,6:ディール機能
+        var exp = new RegExp("deal");
+        if (cmd.search(exp) == 0) {
+            if (dealing >= 0) {
+                dealing = -1;
+                dealUserMax = -1;
+                return {num: 6, mes: "コマンド:DEALを停止"};
+            }
+            dealing = userCount;
+            dealUserMax = userCount;
+            dealList = {};
+            return {num: 5, mes: "コマンド:DEALを使用"};
         }
-        return {
-            num: 4,
-            mes: "コマンド:DELを使用 -> \"" + name + "\"を退室させました。",
-            val: id
-        };
+        //7:ランキング確認
+        var exp = new RegExp("rank \\d+");
+        if (cmd.search(exp) == 0) {
+            var rank = cmd.substr(4, cmd.length - 1);
+            rank = Number(rank);
+            if (rank < 1 || dealUserMax - dealing < rank) {
+                return {num: 7, mes: "コマンド:RANKINGに対応する数値ではありません。"};
+            }
+            return {num: 7, mes: "コマンド:RANKINGを使用", val: rank};
+        }
+        //8:ディールのボタン表示のみ
+        var exp = new RegExp("ondeal");
+        if (cmd.search(exp) == 0) {
+            return {num: 8, mes: "コマンド:ONDEALを使用"};
+        }
+        //9:ディールのボタン非表示のみ
+        var exp = new RegExp("offdeal");
+        if (cmd.search(exp) == 0) {
+            return {num: 9, mes: "コマンド:OFFDEALを使用"};
+        }
+
+        //-1:該当なし
+        return {num: -1, mes: "ニュージェネかな。"};
     }
-    //5,6:ディール機能
-    var exp = new RegExp("deal");
-    if (cmd.search(exp) == 0) {
-        if (dealing >= 0) {
-            dealing = -1;
-            dealUserMax = -1;
-            return {num: 6, mes: "コマンド:DEALを停止"};
-        }
-        dealing = userCount;
-        dealUserMax = userCount;
+
+    //変数初期化
+    function init() {
+        userCount = 0;
+        userMax = 9999;
+        dealing = -1;
         dealList = {};
-        return {num: 5, mes: "コマンド:DEALを使用"};
+        dealUserMax = -1;
+        ankList = [];
+        ankUser = [];
+        ankMax = 0;
     }
-    //7:ランキング確認
-    var exp = new RegExp("rank \\d+");
-    if (cmd.search(exp) == 0) {
-        var rank = cmd.substr(4, cmd.length - 1);
-        rank = Number(rank);
-        if (rank < 1 || dealUserMax - dealing < rank) {
-            return {num: 7, mes: "コマンド:RANKINGに対応する数値ではありません。"};
+
+    //ユーザー連想配列再編成
+    function rebuildUser() {
+        var hash = {};
+        var i = 0;
+        for (key in userHash) {
+            hash[i] = userHash[key];
+            i++;
         }
-        return {num: 7, mes: "コマンド:RANKINGを使用", val: rank};
-    }
-    //8:ディールのボタン表示のみ
-    var exp = new RegExp("ondeal");
-    if (cmd.search(exp) == 0) {
-        return {num: 8, mes: "コマンド:ONDEALを使用"};
-    }
-    //9:ディールのボタン非表示のみ
-    var exp = new RegExp("offdeal");
-    if (cmd.search(exp) == 0) {
-        return {num: 9, mes: "コマンド:OFFDEALを使用"};
+        return hash;
     }
 
-    //-1:該当なし
-    return {num: -1, mes: "ニュージェネかな。"};
-}
-
-//変数初期化
-function init() {
-    userCount = 0;
-    userMax = 9999;
-    dealing = -1;
-    dealList = {};
-    dealUserMax = -1;
-    ankList = [];
-    ankUser = [];
-    ankMax = 0;
-}
-
-//ユーザー連想配列再編成
-function rebuildUser() {
-    var hash = {};
-    var i = 0;
-    for (key in userHash) {
-        hash[i] = userHash[key];
-        i++;
-    }
-    return hash;
-}
-
-//ディール連想配列再編成
-function rebuildDeal() {
-    var hash = {};
-    var i = 0;
-    for (key in userHash) {
-        hash[i] = dealList[key];
-        i++;
-    }
-    return hash;
-}
-
-//html特殊文字エスケープ
-function escape_html(string) {
-    if (typeof string !== 'string') {
-        return string;
-    }
-    var exp = new RegExp("[&'`\"<>]", "g");
-    return string.replace(exp, function(match) {
-        switch (match) {
-            case '&':
-                return '&amp;';
-            case "'":
-                return '&#x27;';
-            case '`':
-                return '&#x60;';
-            case '"':
-                return '&quot;';
-            case '<':
-                return '&lt;';
-            case '>':
-                return '&gt;';
+    //ディール連想配列再編成
+    function rebuildDeal() {
+        var hash = {};
+        var i = 0;
+        for (key in userHash) {
+            hash[i] = dealList[key];
+            i++;
         }
-    });
-}
+        return hash;
+    }
 
-//任意ランキング取り出し
-function pickRanking(num) {
-    return new Promise(function(resolve) {
-        var dealAry = [];
-        for (key in dealList) {
-            dealAry.push({"key": key, "deal": dealList[key]});
+    //html特殊文字エスケープ
+    function escape_html(string) {
+        if (typeof string !== 'string') {
+            return string;
         }
-        var sorted = _.sortBy(dealAry, elem => elem.deal * -1);
-        resolve(sorted[num - 1].key);
-    });
+        var exp = new RegExp("[&'`\"<>]", "g");
+        return string.replace(exp, function(match) {
+            switch (match) {
+                case '&':
+                    return '&amp;';
+                case "'":
+                    return '&#x27;';
+                case '`':
+                    return '&#x60;';
+                case '"':
+                    return '&quot;';
+                case '<':
+                    return '&lt;';
+                case '>':
+                    return '&gt;';
+            }
+        });
+    }
+
+    //任意ランキング取り出し
+    function pickRanking(num) {
+        return new Promise(function(resolve) {
+            var dealAry = [];
+            for (key in dealList) {
+                dealAry.push({"key": key, "deal": dealList[key]});
+            }
+            var sorted = _.sortBy(dealAry, elem => elem.deal * -1);
+            resolve(sorted[num - 1].key);
+        });
+    }
+
+    //setエミット用jsonリスト
+    function mergeSetList() {
+        return {num: userCount, max: userMax, mem: rebuildUser(), dnum: dealUserMax, dmem: rebuildDeal()};
+    }
+
+    //小数点以下n位までの四捨五入
+    function floatFormat(number, n) {
+        var _pow = Math.pow(10, n);
+        return Math.round(number * _pow) / _pow;
+    }
+
 }
 
-//setエミット用jsonリスト
-function mergeSetList() {
-    return {num: userCount, max: userMax, mem: rebuildUser(), dnum: dealUserMax, dmem: rebuildDeal()};
-}
-
-//小数点以下n位までの四捨五入
-function floatFormat(number, n) {
-    var _pow = Math.pow(10, n);
-    return Math.round(number * _pow) / _pow;
-}
 
 module.exports = WebSock;
