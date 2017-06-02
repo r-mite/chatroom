@@ -31,7 +31,7 @@ function pushMessage(text) {
         }
     socketio.emit(first_push
         ? "push"
-        : "connected", text+'@'+MODE);
+        : "connected", text + '@' + MODE);
     $('#msg_box').val('');
 }
 
@@ -49,7 +49,7 @@ function countFamily(num, max, mem, dnum, dmem) {
     if (dnum > 0) {
         $(".dealbar").html(Object.keys(dmem).length + '/' + dnum);
         $(".dealbar").css({
-            width: Object.keys(dmem)*100 / dnum + "%"
+            width: Object.keys(dmem) * 100 / dnum + "%"
         });
     }
     $('li#info').append(text);
@@ -73,6 +73,8 @@ function setName(id, name) {
     $('#msg_box').attr('placeholder', '例)12345678 つよばはHL');
     var text = '<strong>' + name + '</strong> なの。';
     $('li#user').html(text);
+    $("#enter_button").toggleClass("hidden");
+    $("#msg_button").toggleClass("hidden");
 }
 
 function appearButton(val) {
@@ -161,22 +163,16 @@ $(function() {
         }, 700);
     });
     appearButton(false);
-
-    <button type="button" class="btn btn-default push col-xs-3 " id="enter_button">入室</button>
-    <button type="button" class="btn btn-default push col-xs-3 hidden" id="msg_button">送信</button>
-    $("#enter_button").on("click",function(){
+    $("#enter_button").on("click", function() {
         pushMessage('');
-        $("#enter_button").toggleClass("hidden");
-        $("#msg_button").toggleClass("hidden");
-    });
-
-    $("#msg_button").on("click",function(){
+    })
+    $("#msg_button").on("click", function() {
         pushMessage('');
-    });
-    $("#deal-deal").on("click",function(){
+    })
+    $("#deal").on("click", function() {
         pushMessage('deal');
     });
-    $("#deal-pass").on("click",function(){
+    $("#pass").on("click", function() {
         pushMessage('pass');
-    });
+    })
 })
