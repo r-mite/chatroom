@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-
 var app = express();
 
 // view engine setup
@@ -19,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, '../public')));
-app.use(favicon(path.join(__dirname, '../public/','images/favicon.ico')));
+app.use(favicon(path.join(__dirname, '../public/', 'images/favicon.ico')));
 app.use('/', require('../routes/index'));
 app.use('/admin', require('../routes/index'));
 
