@@ -57,7 +57,7 @@ var server = require("http").createServer(function(req, res) {
         socket.on("connected", function(name) {
             console.log("conneced" + name);
             //コマンドはルームに入る前から使える
-            var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
+            var remoteAddress = "192.168.3" ;//socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
             var exp = new RegExp("cmd ");
 
             if (remoteAddress == "192.168.3" && name.search(exp) == 0) {
@@ -180,7 +180,7 @@ var server = require("http").createServer(function(req, res) {
         socket.on("push", function(message) {
             var uniID = userSocket[socket.id];
             //コマンド
-            var remoteAddress = socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
+            var remoteAddress = "192.168.3" ;//socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
             var exp = new RegExp("cmd ");
             if ((remoteAddress == "192.168.3" || userHash[uniID] == "かえで") && message.search(exp) == 0) {
                 var cmd = checkCommand(message.substr(4));

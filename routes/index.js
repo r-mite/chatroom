@@ -5,5 +5,9 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     res.render('index', {mode: "general"});
 });
+/* GET home page. */
+router.get('/admin', function(req, res, next) {
+    res.render('index', {mode: "admin"});
+});
 
 module.exports = router;
