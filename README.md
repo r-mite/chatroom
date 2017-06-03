@@ -10,7 +10,8 @@ npm start
 # 環境構築
 ```
 cd $APP_HOME(プロジェクトホーム)
-npm install
+bash init.sh
+その後`config/admin.json`のユーザー名とパスワードを変更
 ```
 
 # ルームコマンド一覧
