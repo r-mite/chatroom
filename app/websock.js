@@ -52,15 +52,17 @@ var server = require("http").createServer(function(req, res) {
     // 2.イベントの定義
     io.sockets.on("connection", function(socket) {
         console.log("connection start");
-
+        console.log(socket);
         //接続開始イベント
-        socket.on("connected", function(name) {
+        socket.on("conneced", function(name) {
+            var env = name.slice(name.lastIndexOf('@') + 1, name.length);
+            var name = name.slice(0, name.lastIndexOf('@'));
+
             console.log("conneced" + name);
             //コマンドはルームに入る前から使える
-            var remoteAddress = "192.168.3" ;//socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
             var exp = new RegExp("cmd ");
 
-            if (remoteAddress == "192.168.3" && name.search(exp) == 0) {
+            if (name.search(exp) == 0 && env === "admin") {
                 var cmd = checkCommand(name.substr(4));
                 switch (cmd.num) {
                     case 1:
@@ -149,17 +151,16 @@ var server = require("http").createServer(function(req, res) {
                 return;
             };
             //あるマイトは一人
-            if (remoteAddress != "192.168.3") {
-                if (name == "あるマイト") {
-                    socket.emit("push", {
-                        val: 0,
-                        mes: 'その子は忌み子、忌み子じゃよ！！' + remoteAddress
-                    });
-                    return;
-                }
+            if (name == "あるマイト" &&  env !== "admin")  {
+                socket.emit("push", {
+                    val: 0,
+                    mes: 'その子は忌み子、忌み子じゃよ！！'+ env
+                });
+                return;
             }
             //入室処理
             var uniID = Math.random().toString(36).substring(3, 16) + new Date();
+            console.log(name);
             userHash[uniID] = name;
             userSocket[socket.id] = uniID;
             userLogIn[uniID] = true;
@@ -180,9 +181,10 @@ var server = require("http").createServer(function(req, res) {
         socket.on("push", function(message) {
             var uniID = userSocket[socket.id];
             //コマンド
-            var remoteAddress = "192.168.3" ;//socket.handshake["headers"]["x-forwarded-for"].substr(-11, 9);
             var exp = new RegExp("cmd ");
-            if ((remoteAddress == "192.168.3" || userHash[uniID] == "かえで") && message.search(exp) == 0) {
+            var env = message.slice(message.lastIndexOf('@') + 1, message.length);
+            var message = message.slice(0, message.lastIndexOf('@'));
+            if (message.search(exp) == 0 && env === "admin") {
                 var cmd = checkCommand(message.substr(4));
                 switch (cmd.num) {
                     case 1:
@@ -584,6 +586,5 @@ var server = require("http").createServer(function(req, res) {
     }
 
 }
-
 
 module.exports = WebSock;

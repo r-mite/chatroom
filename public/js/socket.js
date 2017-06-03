@@ -1,10 +1,13 @@
-var socketio = io.connect(location.href);
+var socketio = io.connect("/");
 //コールバック
-socketio.on("connected", function(name) {});
+socketio.on("connected", function(name) {
+    console.log("conneced");
+});
 socketio.on("set", function(data) {
     countFamily(data.num, data.max, data.mem, data.dnum, data.dmem);
 });
 socketio.on("push", function(data) {
+    console.log(data);
     addMessage(data.val, data.name, data.mes);
 });
 socketio.on("name", function(data) {
@@ -24,14 +27,16 @@ socketio.on("disconnect", function() {});
 //送信部
 var first_push = false;
 function pushMessage(text) {
+
     if (text == "") {
         text = $('#msg_box').val();
         if (text == "")
             return;
         }
+    console.log(text, first_push);
     socketio.emit(first_push
         ? "push"
-        : "connected", text + '@' + MODE);
+        : "conneced", text + '@' + MODE);
     $('#msg_box').val('');
 }
 
@@ -162,6 +167,7 @@ $(function() {
             opacity: 1
         }, 700);
     });
+    console.log("ready");
     appearButton(false);
     $("#enter_button").on("click", function() {
         pushMessage('');
