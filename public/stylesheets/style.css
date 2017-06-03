@@ -1,0 +1,60 @@
+body{
+    line-height:1.5;
+    padding:120px 10px;
+    background-image:url(../images/sky.jpg);
+    background-position:center center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-size:cover;
+    background-color:#add8e6;
+}
+li.chat{
+    background:#ffffff;
+    margin-bottom:5px;
+    list-style:none;
+    padding:10px;
+    position:relative;
+    border-radius:10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+}
+li.pat0{
+    color:#800000;
+}
+li.pat1{
+    color:#000080;
+}
+li.pat2{
+}
+li.pat3{
+    font-weight:bold;
+}
+li.pat3:hover{
+    background:#ffff00;
+}
+li.pat4{
+    color:#008000;
+}
+li.pat5{
+    background:#000000;
+    color:#ffffff;
+}
+li.pat6{
+    background:#000000;
+    color:#ffff00;
+}
+div.modalbox{
+    opacity:0;
+}
+div.ank{
+    padding-top:15%;
+}
+button.ankbuttons{
+    height:150px;
+}
+button.ankbuttonl{
+    height:200px;
+}
+textarea{
+    position:fixed;
+}
