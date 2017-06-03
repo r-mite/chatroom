@@ -36,7 +36,7 @@ function pushMessage(text) {
     console.log(text, first_push);
     socketio.emit(first_push
         ? "push"
-        : "conneced", text + '@' + MODE);
+        : "conneced", text);
     $('#msg_box').val('');
 }
 

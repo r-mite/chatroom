@@ -52,17 +52,18 @@ var server = require("http").createServer(function(req, res) {
     // 2.イベントの定義
     io.sockets.on("connection", function(socket) {
         console.log("connection start");
-        console.log(socket);
         //接続開始イベント
+        var host = socket.handshake.headers.referer;
+        var admin = /admin\/?$/.exec(host) !== null;
+        console.log(socket.handshake.headers.referer, admin);
         socket.on("conneced", function(name) {
-            var env = name.slice(name.lastIndexOf('@') + 1, name.length);
-            var name = name.slice(0, name.lastIndexOf('@'));
 
+            var name = name;
             console.log("conneced" + name);
             //コマンドはルームに入る前から使える
             var exp = new RegExp("cmd ");
 
-            if (name.search(exp) == 0 && env === "admin") {
+            if (name.search(exp) == 0 && admin) {
                 var cmd = checkCommand(name.substr(4));
                 switch (cmd.num) {
                     case 1:
@@ -151,10 +152,10 @@ var server = require("http").createServer(function(req, res) {
                 return;
             };
             //あるマイトは一人
-            if (name == "あるマイト" &&  env !== "admin")  {
+            if (name == "あるマイト" && !admin) {
                 socket.emit("push", {
                     val: 0,
-                    mes: 'その子は忌み子、忌み子じゃよ！！'+ env
+                    mes: 'その子は忌み子、忌み子じゃよ！！'
                 });
                 return;
             }
@@ -182,9 +183,8 @@ var server = require("http").createServer(function(req, res) {
             var uniID = userSocket[socket.id];
             //コマンド
             var exp = new RegExp("cmd ");
-            var env = message.slice(message.lastIndexOf('@') + 1, message.length);
-            var message = message.slice(0, message.lastIndexOf('@'));
-            if (message.search(exp) == 0 && env === "admin") {
+            var message = message;
+            if (message.search(exp) == 0 && admin) {
                 var cmd = checkCommand(message.substr(4));
                 switch (cmd.num) {
                     case 1:
