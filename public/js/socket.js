@@ -171,9 +171,11 @@ $(function() {
     appearButton(false);
     $("#enter_button").on("click", function() {
         pushMessage('');
+        return false;
     })
     $("#msg_button").on("click", function() {
         pushMessage('');
+        return false;
     })
     $("#deal").on("click", function() {
         pushMessage('deal');
